@@ -14,14 +14,13 @@ export default class PreparedAnresisImportController extends Controller {
 
 
     constructor({
+        registryClient,
         apiHost,
-        storageHost,
     }) {
         super('prepared-anresis-import');
 
-        // hostname for the API with the infect entity data
+        this.registryClient = registryClient;
         this.apiHost = apiHost;
-        this.storageHost = storageHost;
 
         // imports are transactional
         this.enableAction('create');
@@ -78,9 +77,10 @@ export default class PreparedAnresisImportController extends Controller {
                 records.push(normalizedRecord);
             }
 
+            const storageHost = await this.registryClient.resolve('infect-rda-sample-storage');
 
             // send off to storage
-            await superagent.post(`${this.storageHost}/infect-sample-storage.data`).ok(res => res.status === 201).send({
+            await superagent.post(`${storageHost}/infect-rda-sample-storage.data`).ok(res => res.status === 201).send({
                 dataVersionId: parseInt(request.params.id, 10),
                 records: records,
             });
@@ -104,13 +104,16 @@ export default class PreparedAnresisImportController extends Controller {
         if (!data) response.status(400).send(`Missing request body!`);
         else if (!type.object(data)) response.status(400).send(`Request body must be a json object!`);
         else if (!type.string(data.dataSet)) response.status(400).send(`Missing parameter 'dataSet' in request body!`);
+        else if (!type.array(data.dataSetFields)) response.status(400).send(`Missing parameter 'dataSetFields' in request body!`);
         else {
+            const storageHost = await this.registryClient.resolve('infect-rda-sample-storage');
 
-             // create a new data version on the sample storage
-            const version = await superagent.post(`${this.storageHost}/infect-sample-storage.data-version`)
+            // create a new data version on the sample storage
+            const version = await superagent.post(`${storageHost}/infect-rda-sample-storage.data-version`)
                 .ok(res => res.status === 201)
                 .send({
                     dataSet: data.dataSet,
+                    dataSetFields:data.dataSetFields,
                     identifier: data.identifier || null,
                     description: data.description || null,
                 });
@@ -120,6 +123,8 @@ export default class PreparedAnresisImportController extends Controller {
             };
         }
     }
+
+
 
 
 

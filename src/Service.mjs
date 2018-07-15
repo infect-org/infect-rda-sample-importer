@@ -22,10 +22,7 @@ export default class InfectSampleImportService extends RDAService {
 
 
     constructor() {
-        super('infect-sample-import');
-
-        // get the configuration file
-        this.loadConfig(this.dirname());
+        super('infect-rda-sample-import');
     }
 
 
@@ -37,26 +34,19 @@ export default class InfectSampleImportService extends RDAService {
     * prepare the service
     */
     async load() {
+        const options = {
+            registryClient: this.registryClient,
+            apiHost: this.config.apiHost,
+        };
 
         // register controllers
-        this.registerController(new PreparedAnresisImportController({
-            apiHost: this.config.services.api,
-            storageHost: this.config.services.sampleStorage,
-        }));
+        this.registerController(new PreparedAnresisImportController(options));
 
 
         await super.load();
+
+
+        // tell the service registry where we are
+        await this.registerService();
     }
-
-
-
-
-
-    /**
-    * returns the current directory for this class
-    */
-    dirname() {
-        return path.join(path.dirname(new URL(import.meta.url).pathname), '../');
-    }
-
 }
