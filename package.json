@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node --experimental-modules ./node_modules/.bin/section ./test/*.mjs --dev --log-level=error+ --log-module=*"
+    "test": "node --no-warnings --experimental-modules ./node_modules/.bin/section ./test/*.mjs --dev --log-level=error+ --log-module=*"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,11 @@
   "dependencies": {
     "ee-log": "^3.0.6",
     "ee-types": "^2.1.4",
-    "envr": "^2.1.3",
+    "envr": "^2.1.4",
     "logd": "^2.1.2",
     "logd-console-transport": "^1.0.0",
     "lru-cache": "^4.1.3",
-    "rda-service": "^2.4.1"
+    "rda-service": "^2.5.1"
   },
   "devDependencies": {
     "csv": "^3.1.0",

@@ -5,6 +5,7 @@ import {Controller} from 'rda-service';
 import type from 'ee-types';
 import log from 'ee-log';
 import APILookup from '../APILookup';
+import BacteriumLookup from '../BacteriumLookup';
 import superagent from 'superagent';
 
 
@@ -71,19 +72,39 @@ export default class PreparedAnresisImportController extends Controller {
 
             // normalize data
             const records = [];
+            const failedRecords = [];
 
             for (const record of data) {
-                const normalizedRecord = await this.normalizeRecord(record);
-                records.push(normalizedRecord);
+                const normalizedRecord = await this.normalizeRecord(record).catch((err) => {
+                    failedRecords.push({
+                        data: record,
+                        error: err.message,
+                    });
+
+                    return null;
+                });
+
+                if (normalizedRecord) records.push(normalizedRecord);
             }
 
             const storageHost = await this.registryClient.resolve('infect-rda-sample-storage');
 
             // send off to storage
-            await superagent.post(`${storageHost}/infect-rda-sample-storage.data`).ok(res => res.status === 201).send({
+            const storageRespone = await superagent.post(`${storageHost}/infect-rda-sample-storage.data`).ok(res => res.status === 201).send({
                 dataVersionId: parseInt(request.params.id, 10),
                 records: records,
+            }).catch((err) => {
+                log(err);
+                throw err;
             });
+
+
+            return {
+                importedRecordCount: storageRespone.body.importedRecordCount,
+                failedRecordCount: failedRecords.length,
+                failedRecords: failedRecords,
+                duplicateRecordCount: storageRespone.body.duplicateRecordCount,
+            };
         }
     }
 
@@ -171,10 +192,9 @@ export default class PreparedAnresisImportController extends Controller {
             resource: 'substance.compound',
         });
 
-        const bacterium = new APILookup({
+        const bacterium = new BacteriumLookup({
             host: this.apiHost,
             resource: 'pathogen.bacterium',
-            property: 'name',
         });
 
         const region = new APILookup({

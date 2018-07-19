@@ -27,8 +27,8 @@ section('RDA sample importer', (section) => {
 
     section.test('Start & stop service', async() => {
         const service = new Service();
-
         await service.load();
+        
         await section.wait(200);
         await service.end();
     });

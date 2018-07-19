@@ -22,6 +22,6 @@ const service = new Service();
 
 // load it
 service.load().then(() => {
-    log.success(`The INFECT SampleI mporter Service is listening on port ${service.server.port}`);
+    log.success(`The INFECT Sample Importer Service is listening on port ${service.server.port}`);
 }).catch(console.log);
 
