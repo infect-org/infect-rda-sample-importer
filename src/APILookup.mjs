@@ -41,18 +41,25 @@ export default class Lookup {
     async get(key) {
         if (this.cache.has(key)) return this.cache.get(key);
         else {
-
-            const response = await request.get(`${this.host}/${this.resource}`)
+            const promise = request.get(`${this.host}/${this.resource}`)
                 .set('filter', `${this.property}=${key}`)
                 .ok(res => true)
-                .send();
+                .send().then((response) => {
 
+                if (response && response.body && response.body.length) {
+                    if (this.field) return Promise.resolve(response.body[0][this.field]);
+                    else return Promise.resolve(response.body[0]);
+                } else {
+                    const err = new Error(`Failed to load value for key '${key}' from ${this.host}/${this.resource}`);
+                    err.resource = this.resource;
+                    err.property = this.property;
+                    err.unresolvedValue = key;
+                    return Promise.reject(err);
+                }
+            });
+            
 
-            if (response && response.body && response.body.length) {
-                if (this.field) this.cache.set(key, response.body[0][this.field]);
-                else this.cache.set(key, response.body[0]);
-            } else throw new Error(`Failed to load value for key '${key}' from ${this.host}/${this.resource}`);
-
+            this.cache.set(key, promise);
             return this.cache.get(key);
         }
     }

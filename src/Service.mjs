@@ -11,7 +11,7 @@ const log = logd.module('infect-rda-sample-importer');
 
 
 // controllers
-import PreparedAnresisImportController from './controller/PreparedAnresisImport';
+import AnresisImportController from './controller/AnresisImport';
 
 
 
@@ -40,7 +40,7 @@ export default class InfectSampleImportService extends RDAService {
         };
 
         // register controllers
-        this.registerController(new PreparedAnresisImportController(options));
+        this.registerController(new AnresisImportController(options));
 
 
         await super.load();

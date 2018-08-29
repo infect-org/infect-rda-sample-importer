@@ -11,14 +11,14 @@ import superagent from 'superagent';
 
 
 
-export default class PreparedAnresisImportController extends Controller {
+export default class AnresisImportController extends Controller {
 
 
     constructor({
         registryClient,
         apiHost,
     }) {
-        super('prepared-anresis-import');
+        super('anresis-import');
 
         this.registryClient = registryClient;
         this.apiHost = apiHost;
@@ -41,6 +41,10 @@ export default class PreparedAnresisImportController extends Controller {
 
 
         this.resolvers = this.getLookupHandlers();
+
+
+        // stores mapping misses for the anresis data
+        this.mappingMisses = new Map();
     }
 
 
@@ -77,8 +81,11 @@ export default class PreparedAnresisImportController extends Controller {
             for (const record of data) {
                 const normalizedRecord = await this.normalizeRecord(record).catch((err) => {
                     failedRecords.push({
-                        data: record,
+                        data: JSON.stringify(record),
                         error: err.message,
+                        failedResource: err.resource,
+                        failedProperty: err.property,
+                        unresolvedValue: err.unresolvedValue,
                     });
 
                     return null;
@@ -163,11 +170,11 @@ export default class PreparedAnresisImportController extends Controller {
         sampleId,
     }) {
         const resolvedAgeGroup = await this.resolvers.ageGroup.get(ageGroup);
-        const resolvedRegion = await this.resolvers.region.get(region);
-        const resolvedBacterium = await this.resolvers.bacterium.get(bacterium);
-        const resolvedAntibiotic = await this.resolvers.antibiotic.get(antibiotic);
+        const resolvedRegion = await this.resolvers.regionMapping.get(region);
+        const resolvedBacterium = await this.resolvers.bacteriumMapping.get(bacterium);
+        const resolvedAntibiotic = await this.resolvers.antibioticMapping.get(antibiotic);
 
-        return {
+        const row = {
             bacteriumId: resolvedBacterium,
             antibioticId: resolvedAntibiotic,
             ageGroupId: resolvedAgeGroup,
@@ -176,6 +183,8 @@ export default class PreparedAnresisImportController extends Controller {
             sampleId: sampleId,
             resistance: resistance === 's' ? 0 : (resistance === 'i' ? 1 : 2)
         };
+
+        return row;
     }
 
 
@@ -187,32 +196,35 @@ export default class PreparedAnresisImportController extends Controller {
     * create API lookup handlers
     */
     getLookupHandlers() {
-        const antibiotic = new APILookup({
-            host: this.apiHost,
-            resource: 'substance.compound',
-        });
-
-        const bacterium = new BacteriumLookup({
-            host: this.apiHost,
-            resource: 'pathogen.bacterium',
-        });
-
-        const region = new APILookup({
-            host: this.apiHost,
-            resource: 'generics.region',
-        });
-
         const ageGroup = new APILookup({
             host: this.apiHost,
             resource: 'generics.ageGroup',
         });
 
+        const antibioticMapping = new APILookup({
+            host: this.apiHost,
+            resource: 'anresis.antibioticMapping',
+            property: 'anresisAntibiotic',
+        });
+
+        const regionMapping = new APILookup({
+            host: this.apiHost,
+            resource: 'anresis.regionMapping',
+            property: 'anresisRegion',
+        });
+
+        const bacteriumMapping = new APILookup({
+            host: this.apiHost,
+            resource: 'anresis.bacteriumMapping',
+            property: 'anresisBacterium',
+        });
+
 
         return {
-            antibiotic,
-            bacterium,
-            region,
             ageGroup,
+            antibioticMapping,
+            bacteriumMapping,
+            regionMapping,
         };
     }
 }
