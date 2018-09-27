@@ -1,12 +1,8 @@
-'use strict';
-
-
-import {Controller} from 'rda-service';
+import { Controller } from 'rda-service';
 import type from 'ee-types';
 import log from 'ee-log';
 import APILookup from '../APILookup';
-import BacteriumLookup from '../BacteriumLookup';
-import superagent from 'superagent';
+import HTTP2Client from '@distributed-systems/http2-client'
 
 
 
@@ -37,7 +33,11 @@ export default class AnresisImportController extends Controller {
             ['sampleDate', 'string'],
             ['resistance', 'string'],
             ['sampleId', 'string'],
+            ['hospitalStatus', 'string'],
         ]);
+
+
+        this.httpClient = new HTTP2Client();
 
 
         this.resolvers = this.getLookupHandlers();
@@ -51,22 +51,34 @@ export default class AnresisImportController extends Controller {
 
 
 
+    async end() {
+        for (const resolverName of Object.keys(this.resolvers)) {
+            const resolver = this.resolvers[resolverName];
+
+            await resolver.end();
+        }
+
+        await this.httpClient.end();
+    }
+
+
+
     /**
     * import records
     */
-    async update(request, response) {
-        const data = request.body;
+    async update(request) {
+        const data = await request.getData();
 
-        if (!data) response.status(400).send(`Missing request body!`);
-        else if (!type.array(data)) response.status(400).send(`Missing records array in the request body!`);
-        else if (!type.string(request.params.id)) response.status(400).send(`Missing the id parameter!`);
+        if (!data) request.response().status(400).send(`Missing request body!`);
+        else if (!type.array(data)) request.response().status(400).send(`Missing records array in the request body!`);
+        else if (!type.string(request.getParameter('id'))) request.response().status(400).send(`Missing the id parameter!`);
         else {
             
             // validate input
             for (const record of data) {
                 for (const [property, typeName] of this.requiredFields.entries()) {
                     if (!type[typeName](record[property])) {
-                        response.status(400).send(`Missing or invalid property '${property}', expected '${typeName}', got '${type(record[property])}'`);
+                        request.response().status(400).send(`Missing or invalid property '${property}', expected '${typeName}', got '${type(record[property])}'`);
                         return;
                     }
                 }
@@ -97,20 +109,25 @@ export default class AnresisImportController extends Controller {
             const storageHost = await this.registryClient.resolve('infect-rda-sample-storage');
 
             // send off to storage
-            const storageRespone = await superagent.post(`${storageHost}/infect-rda-sample-storage.data`).ok(res => res.status === 201).send({
-                dataVersionId: parseInt(request.params.id, 10),
-                records: records,
-            }).catch((err) => {
-                log(err);
-                throw err;
-            });
+            const storageRespone = await this.httpClient.post(`${storageHost}/infect-rda-sample-storage.data`)
+                .expect(201)
+                .send({
+                    dataVersionId: parseInt(request.getParameter('id'), 10),
+                    records: records,
+                }).catch((err) => {
+                    log(err);
+                    throw err;
+                });
+
+
+            const storageData = await storageRespone.getData(); 
 
 
             return {
-                importedRecordCount: storageRespone.body.importedRecordCount,
+                importedRecordCount: storageData.importedRecordCount,
                 failedRecordCount: failedRecords.length,
                 failedRecords: failedRecords,
-                duplicateRecordCount: storageRespone.body.duplicateRecordCount,
+                duplicateRecordCount: storageData.duplicateRecordCount,
             };
         }
     }
@@ -126,19 +143,19 @@ export default class AnresisImportController extends Controller {
     * create an import, call the sample storage service, 
     * create a version over there
     */
-    async create(request, response) {
-        const data = request.body;
+    async create(request) {
+        const data = await request.getData();
 
-        if (!data) response.status(400).send(`Missing request body!`);
-        else if (!type.object(data)) response.status(400).send(`Request body must be a json object!`);
-        else if (!type.string(data.dataSet)) response.status(400).send(`Missing parameter 'dataSet' in request body!`);
-        else if (!type.array(data.dataSetFields)) response.status(400).send(`Missing parameter 'dataSetFields' in request body!`);
+        if (!data) request.response().status(400).send(`Missing request body!`);
+        else if (!type.object(data)) request.response().status(400).send(`Request body must be a json object!`);
+        else if (!type.string(data.dataSet)) request.response().status(400).send(`Missing parameter 'dataSet' in request body!`);
+        else if (!type.array(data.dataSetFields)) request.response().status(400).send(`Missing parameter 'dataSetFields' in request body!`);
         else {
             const storageHost = await this.registryClient.resolve('infect-rda-sample-storage');
 
             // create a new data version on the sample storage
-            const version = await superagent.post(`${storageHost}/infect-rda-sample-storage.data-version`)
-                .ok(res => res.status === 201)
+            const version = await this.httpClient.post(`${storageHost}/infect-rda-sample-storage.data-version`)
+                .expect(201)
                 .send({
                     dataSet: data.dataSet,
                     dataSetFields:data.dataSetFields,
@@ -146,8 +163,10 @@ export default class AnresisImportController extends Controller {
                     description: data.description || null,
                 });
 
+            const versionData = await version.getData();
+
             return {
-                id: version.body.id
+                id: versionData.id
             };
         }
     }
@@ -168,20 +187,23 @@ export default class AnresisImportController extends Controller {
         sampleDate,
         resistance,
         sampleId,
+        hospitalStatus,
     }) {
         const resolvedAgeGroup = await this.resolvers.ageGroup.get(ageGroup);
         const resolvedRegion = await this.resolvers.regionMapping.get(region);
         const resolvedBacterium = await this.resolvers.bacteriumMapping.get(bacterium);
         const resolvedAntibiotic = await this.resolvers.antibioticMapping.get(antibiotic);
+        const resolvedHospitalStatus = await this.resolvers.hospitalStatus.get(hospitalStatus);
 
         const row = {
-            bacteriumId: resolvedBacterium,
-            antibioticId: resolvedAntibiotic,
             ageGroupId: resolvedAgeGroup,
+            antibioticId: resolvedAntibiotic,
+            bacteriumId: resolvedBacterium,
+            hospitalStatusId: resolvedHospitalStatus,
             regionId: resolvedRegion,
+            resistance: resistance === 's' ? 0 : (resistance === 'i' ? 1 : 2),
             sampleDate: sampleDate,
             sampleId: sampleId,
-            resistance: resistance === 's' ? 0 : (resistance === 'i' ? 1 : 2)
         };
 
         return row;
@@ -201,22 +223,30 @@ export default class AnresisImportController extends Controller {
             resource: 'generics.ageGroup',
         });
 
+        const hospitalStatus = new APILookup({
+            host: this.apiHost,
+            resource: 'generics.hospitalStatus',
+        });
+
         const antibioticMapping = new APILookup({
             host: this.apiHost,
             resource: 'anresis.antibioticMapping',
             property: 'anresisAntibiotic',
+            field: 'id_compound',
         });
 
         const regionMapping = new APILookup({
             host: this.apiHost,
             resource: 'anresis.regionMapping',
             property: 'anresisRegion',
+            field: 'id_region',
         });
 
         const bacteriumMapping = new APILookup({
             host: this.apiHost,
             resource: 'anresis.bacteriumMapping',
             property: 'anresisBacterium',
+            field: 'id_bacterium',
         });
 
 
@@ -224,6 +254,7 @@ export default class AnresisImportController extends Controller {
             ageGroup,
             antibioticMapping,
             bacteriumMapping,
+            hospitalStatus,
             regionMapping,
         };
     }

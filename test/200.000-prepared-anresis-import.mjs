@@ -1,5 +1,3 @@
-'use strict';
-
 import APILookup from '../src/APILookup';
 import Service from '../index.mjs';
 import section from 'section-tests';
@@ -7,10 +5,10 @@ import assert from 'assert';
 import log from 'ee-log';
 import fs from 'fs-promise';
 import path from 'path';
-import request from 'superagent';
 import util from 'util';
 import csv from 'csv';
-import {ServiceManager} from 'rda-service';
+import ServiceManager from '@infect/rda-service-manager';
+import HTTP2Client from '@distributed-systems/http2-client';
 
 
 const parse = util.promisify(csv.parse);
@@ -38,22 +36,26 @@ section('Prepared Anresis Import', (section) => {
 
     section.test('Create Import', async() => {
         const service = new Service();
+        const client = new HTTP2Client();
         await service.load();
         
 
-        const response = await request.post(`${host}:${service.getPort()}/infect-rda-sample-import.prepared-anresis-import`)
-            .ok(res => res.status === 201)
+        const response = await client.post(`${host}:${service.getPort()}/infect-rda-sample-import.anresis-import`)
+            .expect(201)
             .send({
                 dataSet: 'test-set',
                 dataSetFields: ['id'],
             }).catch(log);
 
-        assert(response.body);
-        assert(response.body.id);
+        const data = await response.getData();
+
+        assert(data);
+        assert(data.id);
 
 
         await section.wait(200);
         await service.end();
+        await client.end();
     });
 
 
@@ -61,19 +63,22 @@ section('Prepared Anresis Import', (section) => {
 
     section.test('Import Data', async() => {
         const service = new Service();
+        const client = new HTTP2Client();
         await service.load();
         
 
         section.notice(`creating import ...`);
-        const response = await request.post(`${host}:${service.getPort()}/infect-rda-sample-import.prepared-anresis-import`)
-            .ok(res => res.status === 201)
+        const response = await client.post(`${host}:${service.getPort()}/infect-rda-sample-import.anresis-import`)
+            .expect(201)
             .send({
                 dataSet: 'test-set',
                 dataSetFields: ['bacterium'],
             });
 
-        assert(response.body);
-        assert(response.body.id);
+        const data = await response.getData();
+
+        assert(data);
+        assert(data.id);
 
 
 
@@ -84,8 +89,8 @@ section('Prepared Anresis Import', (section) => {
 
         
 
-        await request.patch(`${host}:${service.getPort()}/infect-rda-sample-import.prepared-anresis-import/${response.body.id}`)
-            .ok(res => res.status === 200)
+        await client.patch(`${host}:${service.getPort()}/infect-rda-sample-import.anresis-import/${data.id}`)
+            .expect(200)
             .send(rawData.map((row) => ({
                 bacterium: row[1],
                 antibiotic: row[4],
@@ -94,16 +99,18 @@ section('Prepared Anresis Import', (section) => {
                 sampleDate: `${row[13].substr(6, 4)}-${row[13].substr(3, 2)}-${row[13].substr(0, 2)}T00:00:00Z`,
                 resistance: row[12],
                 sampleId: row[5],
+                hospitalStatus: row[8],
             })));
 
         await section.wait(200);
         await service.end();
+        await client.end();
     });
 
 
 
 
     section.destroy(async () => {
-        sm.stopServices();
+        await sm.stopServices();
     });
 });

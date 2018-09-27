@@ -1,9 +1,6 @@
-'use strict';
-
-
-import request from 'superagent';
 import LRUCache from 'lru-cache';
 import log from 'ee-log';
+import HTTP2Client from '@distributed-systems/http2-client';
 
 
 export default class Lookup {
@@ -30,6 +27,14 @@ export default class Lookup {
             max: cacheSize,
             maxAge: cacheTTL,
         });
+
+
+        this.httpClient = new HTTP2Client();
+    }
+
+
+    async end() {
+        this.httpClient.end();
     }
 
 
@@ -41,22 +46,22 @@ export default class Lookup {
     async get(key) {
         if (this.cache.has(key)) return this.cache.get(key);
         else {
-            const promise = request.get(`${this.host}/${this.resource}`)
-                .set('filter', `${this.property}=${key}`)
-                .ok(res => true)
-                .send().then((response) => {
+            const promise = this.httpClient.get(`${this.host}/${this.resource}`)
+                .setHeader('filter', `${this.property}=${key}`)
+                .send().then(async (response) => {
+                    const data = await response.getData();
 
-                if (response && response.body && response.body.length) {
-                    if (this.field) return Promise.resolve(response.body[0][this.field]);
-                    else return Promise.resolve(response.body[0]);
-                } else {
-                    const err = new Error(`Failed to load value for key '${key}' from ${this.host}/${this.resource}`);
-                    err.resource = this.resource;
-                    err.property = this.property;
-                    err.unresolvedValue = key;
-                    return Promise.reject(err);
-                }
-            });
+                    if (data && data.length) { 
+                        if (this.field) return data[0][this.field];
+                        else return data[0];
+                    } else {
+                        const err = new Error(`Failed to load value for key '${key}' from ${this.host}/${this.resource}`);
+                        err.resource = this.resource;
+                        err.property = this.property;
+                        err.unresolvedValue = key;
+                        throw err;
+                    }
+                });
             
 
             this.cache.set(key, promise);
