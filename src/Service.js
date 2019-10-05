@@ -1,4 +1,4 @@
-import RDAService from 'rda-service';
+import RDAService from '@infect/rda-service';
 import path from 'path';
 import logd from 'logd';
 
@@ -8,9 +8,11 @@ const log = logd.module('infect-rda-sample-importer');
 
 
 // controllers
-import AnresisImportController from './controller/AnresisImport';
+import AnresisImportController from './controller/AnresisImport.js';
 
 
+
+const appRoot = path.join(path.dirname(new URL(import.meta.url).pathname), '../');
 
 
 
@@ -19,7 +21,10 @@ export default class InfectSampleImportService extends RDAService {
 
 
     constructor() {
-        super('infect-rda-sample-import');
+        super({
+            name: 'infect-rda-sample-import',
+            appRoot,
+        });
     }
 
 
@@ -31,9 +36,11 @@ export default class InfectSampleImportService extends RDAService {
     * prepare the service
     */
     async load() {
+        await this.initialize();
+
         const options = {
             registryClient: this.registryClient,
-            apiHost: this.config.apiHost,
+            apiHost: this.config.get('core-data.host'),
         };
 
         // register controllers

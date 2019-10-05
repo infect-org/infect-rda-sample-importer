@@ -1,5 +1,5 @@
-import APILookup from '../src/APILookup';
-import Service from '../index.mjs';
+import APILookup from '../src/APILookup.js';
+import Service from '../index.js';
 import section from 'section-tests';
 import assert from 'assert';
 import log from 'ee-log';
@@ -12,20 +12,22 @@ section('API Lookup', (section) => {
 
     section.setup(async () => {
         sm = new ServiceManager({
-            args: '--dev  --subenv-testing --log-level=error+ --log-module=* --data-for-dev'.split(' ')
+            args: '--dev.testing --log-level=error+ --log-module=* --data-for-dev'.split(' ')
         });
 
         await sm.startServices('rda-service-registry');
-        await sm.startServices('api');
+        await sm.startServices('@infect/api');
     });
 
 
 
     section.test('Get value', async() => {
         const service = new Service();
+
+        await service.load();
         
         const lookup = new APILookup({
-            host: service.config.apiHost,
+            host: service.config.get('core-data.host'),
             resource: 'substance.compound',
             property: 'identifier',
             field: 'name',
@@ -35,6 +37,9 @@ section('API Lookup', (section) => {
         const value = await lookup.get('amoxicillin');
 
         assert.equal(value, 'Amoxicillin');
+
+
+        await service.end();
     });
 
 

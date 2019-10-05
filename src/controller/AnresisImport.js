@@ -1,7 +1,7 @@
-import { Controller } from 'rda-service';
+import { Controller } from '@infect/rda-service';
 import type from 'ee-types';
 import log from 'ee-log';
-import APILookup from '../APILookup';
+import APILookup from '../APILookup.js';
 import HTTP2Client from '@distributed-systems/http2-client'
 
 

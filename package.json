@@ -1,13 +1,13 @@
 {
-  "name": "infect-rda-sample-importer",
-  "version": "1.0.0",
+  "name": "@infect/infect-rda-sample-importer",
+  "version": "2.0.0",
   "description": "INFECT Sample Data Importer",
-  "main": "index.mjs",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "node --no-warnings --experimental-modules ./node_modules/.bin/section ./test/*.mjs --dev --log-level=error+ --log-module=*"
+    "test": "node --no-warnings --experimental-modules ./node_modules/.bin/section ./test/*.js --dev.testing --log-level=error+ --log-module=*"
   },
   "repository": {
     "type": "git",
@@ -17,26 +17,28 @@
     "infect",
     "samlpe-importer"
   ],
-  "author": "Michael van der Weg",
+  "author": "Lina van der Weg",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/infect-org/infect-rda-sample-importer/issues"
   },
   "homepage": "https://github.com/infect-org/infect-rda-sample-importer#readme",
   "dependencies": {
-    "@infect/rda-service-manager": "^1.0.2",
-    "ee-log": "^3.0.6",
+    "@infect/api": "^2.0.2",
+    "@infect/rda-service": "^4.0.4",
+    "@infect/rda-service-manager": "^2.0.3",
+    "ee-log": "^3.0.9",
     "ee-types": "^2.1.4",
     "envr": "^2.1.4",
-    "logd": "^2.1.2",
-    "logd-console-transport": "^1.0.0",
-    "lru-cache": "^4.1.3",
-    "rda-service": "^3.1.0"
+    "logd": "^2.3.1",
+    "logd-console-transport": "^1.1.0",
+    "lru-cache": "^4.1.5"
   },
   "devDependencies": {
-    "@distributed-systems/http2-client": "^1.2.2",
-    "csv": "^3.1.0",
+    "@distributed-systems/http2-client": "^2.0.1",
+    "csv": "^5.1.3",
     "fs-promise": "^2.0.3",
-    "section-tests": "^2.1.1"
-  }
+    "section-tests": "^2.2.4"
+  },
+  "type": "module"
 }

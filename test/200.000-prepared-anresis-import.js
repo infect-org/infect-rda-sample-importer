@@ -1,5 +1,5 @@
-import APILookup from '../src/APILookup';
-import Service from '../index.mjs';
+import APILookup from '../src/APILookup.js';
+import Service from '../index.js';
 import section from 'section-tests';
 import assert from 'assert';
 import log from 'ee-log';
@@ -23,12 +23,12 @@ section('Prepared Anresis Import', (section) => {
 
     section.setup(async () => {
         sm = new ServiceManager({
-            args: '--dev --subenv-testing --log-level=error+ --log-module=* --data-for-dev'.split(' ')
+            args: '--dev.testing --log-level=error+ --log-module=* --data-for-dev'.split(' ')
         });
 
 
         await sm.startServices('rda-service-registry');
-        await sm.startServices('api', 'infect-rda-sample-storage');
+        await sm.startServices('@infect/api', 'infect-rda-sample-storage');
     });
 
 
@@ -84,7 +84,8 @@ section('Prepared Anresis Import', (section) => {
 
 
         section.notice(`importing records ...`);
-        const CSVBlob = await fs.readFile(path.join(service.getRootDir(), 'test/data/prepared-import-data.csv'));
+        const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../');
+        const CSVBlob = await fs.readFile(path.join(rootDir, 'test/data/prepared-import-data.csv'));
         const rawData = await parse(CSVBlob);
 
         
