@@ -1,0 +1,8 @@
+server:
+    port: 8010
+
+registry-service:
+    host: http://l.dns.porn:9000'
+
+core-data:
+    host: http://api.l.dns.porn:8000

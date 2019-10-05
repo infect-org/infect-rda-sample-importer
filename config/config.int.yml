@@ -1,11 +1,8 @@
-'use strict';
+server:
+    port: 8010
 
+registry-service:
+    host: http://l.dns.porn:9000'
 
-const envr = require('envr');
-
-
-module.exports = {
-    port: 8010,
-    registryHost: 'http://l.dns.porn:9000',
-    apiHost: 'http://api.l.dns.porn:8000',
-};
+core-data:
+    host: http://api.l.dns.porn:8000
