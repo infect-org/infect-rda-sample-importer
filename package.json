@@ -1,6 +1,6 @@
 {
   "name": "@infect/infect-rda-sample-importer",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "INFECT Sample Data Importer",
   "main": "index.js",
   "directories": {
