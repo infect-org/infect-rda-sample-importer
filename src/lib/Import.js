@@ -1,3 +1,5 @@
+import Sample from './Sample.js';
+
 
 
 export default class Import {
@@ -5,6 +7,7 @@ export default class Import {
 
     constructor() {
         this.fields = new Map();
+        this.readSetSize = 100;
     }
 
 
@@ -22,7 +25,7 @@ export default class Import {
 
 
 
-    
+
 
     /**
      * prepare the import, create a data version so that records can be imported
@@ -45,8 +48,44 @@ export default class Import {
      *
      * @param      {stream}   stream  input stream
      */
-    pipe(stream) {
-        
+    async pipe(stream) {
+        return new Promise((resolve, reject) => {
+            stream.on('readable', () => {
+                this.consumeStream(stream);
+            });
+
+            stream.on('close', () => {
+                resolve();
+            });
+
+            stream.on('error', (err) => {
+                reject(err);
+            });
+        });
+    }
+
+
+
+
+
+
+
+    consumeStream(stream) {
+        const rawInputRawSample;
+        const samples = [];
+
+        // collect n samples at a time, process them, then read more
+        while(samples.length < this.readSetSize && rawInputRawSample = stream.read()) {
+            samples.push(rawInputRawSample);
+        }
+
+        this.sampleProcessor.process().catch((err) => {
+            stream.destroy(err);
+        }).then(() => {
+            if (stream.readable) {
+                this.consumeStream(stream);
+            }
+        });
     }
 
 
