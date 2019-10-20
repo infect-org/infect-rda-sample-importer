@@ -1,37 +1,40 @@
 
 
+
 export default class Sample {
 
 
-
-    constructor({
-    }) {
-        this.values = new Map();
-        this.processors = new Map();
-        this.requiredFields = new Map();
+    constructor() {
+        this.originalValues = new Map();
+        this.resolvedValues = new Map();
     }
 
 
 
+    hasResolvedValue(key) {
+        return this.resolvedValues.has(key);
+    }
 
-    /**
-     * adds a field processor to the sample processor
-     *
-     * @param      {object}  processor  The processor
-     */
-    registerFieldProcessor(inputFieldName, processor) {
-        this.processors.set(inputFieldName, processor);
+
+    getOrignalValues() {
+        return this.getOrignalValues();
     }
 
 
 
-    /**
-     * set the fields that are required. if multiple fields are passed, just one
-     * of them needs to be present
-     *
-     * @param      {Array}  fields  The fields
-     */
-    setRequiredField(...fields) {
-        this.requiredFields.add(fields);
+    setResolvedValue(key, value) {
+        this.resolvedValues.set(key, value);
+    }
+
+
+
+    toJSON() {
+        const values = {};
+
+        for (const [key, value] of this.resolvedValues.entries()) {
+            values[key] = value;
+        }
+
+        return values;
     }
 }

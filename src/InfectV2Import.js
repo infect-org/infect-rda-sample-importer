@@ -1,4 +1,4 @@
-import Import from '../lib/Import';
+import Import from '../lib/Import.js';
 
 
 

@@ -9,18 +9,18 @@ export default class Lookup {
     constructor({
         cacheTTL = 3600,
         cacheSize = 1000,
-        host,
+        apiHost,
         resource,
-        property = 'identifier',
-        field = 'id',
+        filterProperty = 'identifier',
+        selectionField = 'id',
     }) {
         // the resource to load
-        this.host = host;
+        this.host = apiHost;
         this.resource = resource;
-        this.property = property;
+        this.property = filterProperty;
 
         // optional return field 
-        this.field = field;
+        this.field = selectionField;
 
         // cache looked up items
         this.cache = new LRUCache({
@@ -31,6 +31,8 @@ export default class Lookup {
 
         this.httpClient = new HTTP2Client();
     }
+
+
 
 
     async end() {
