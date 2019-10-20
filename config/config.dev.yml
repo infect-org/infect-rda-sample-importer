@@ -6,3 +6,8 @@ service-registry:
 
 core-data:
     host: http://api.l.dns.porn:1234
+
+
+imports:
+    anresis:
+        
