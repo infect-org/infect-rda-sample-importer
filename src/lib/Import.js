@@ -6,7 +6,9 @@ export default class Import {
 
 
     constructor() {
-        this.fields = new Map();
+
+        // how many records to read from the incoming data stream before they are 
+        // passed to the sample processor and then the storage
         this.readSetSize = 100;
     }
 
@@ -30,7 +32,7 @@ export default class Import {
     /**
      * prepare the import, create a data version so that records can be imported
      */
-    async load() {
+    async prepare() {
 
     }
 
@@ -69,7 +71,12 @@ export default class Import {
 
 
 
-
+    /**
+     * read samples from the stream until it is drained or n samples were read,
+     * process them. after processing they are sent directly to the storage.
+     *
+     * @param      {stream}  stream  The stream emitting objects
+     */
     consumeStream(stream) {
         const rawInputRawSample;
         const samples = [];
@@ -79,9 +86,12 @@ export default class Import {
             samples.push(rawInputRawSample);
         }
 
-        this.sampleProcessor.process().catch((err) => {
+
+        // process the 
+        this.sampleProcessor.processSamples(samples).catch((err) => {
             stream.destroy(err);
         }).then(() => {
+            
             if (stream.readable) {
                 this.consumeStream(stream);
             }

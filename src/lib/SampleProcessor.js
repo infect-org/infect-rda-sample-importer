@@ -13,6 +13,12 @@ export default class SampleProcessor {
 
 
 
+    processSamples(samples) {
+
+    }
+
+
+
     /**
     * process one sample
     */
