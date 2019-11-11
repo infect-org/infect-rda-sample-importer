@@ -1,4 +1,8 @@
-
+/**
+ * stores one sample
+ *
+ * @class      Sample (name)
+ */
 
 
 export default class Sample {

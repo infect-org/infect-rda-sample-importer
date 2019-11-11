@@ -1,4 +1,10 @@
-
+/**
+ * The sample processor is responsible for processing samples that are passed to it. It normalizes
+ * values by using fieldProcessors that may convert incoming values into a standardized format. It
+ * the makes sure that all required data is present
+ *
+ * @class      SampleProcessor (name)
+ */
 
 
 
@@ -12,7 +18,11 @@ export default class SampleProcessor {
 
 
 
-
+    /**
+     * batch process samples
+     *
+     * @param      {Array}  samples  the samples to process
+     */
     processSamples(samples) {
 
     }
@@ -20,8 +30,10 @@ export default class SampleProcessor {
 
 
     /**
-    * process one sample
-    */
+     * process one sample, process each field separately and check for field requirements thereafter
+     *
+     * @param      {Object}   sample  instance of the Sample Class
+     */
     async process(sample) {
         await this.resolveFields();
         await this.checkFieldConstraints();
@@ -32,7 +44,7 @@ export default class SampleProcessor {
 
 
     /**
-    * heck if the required fields are all present
+    * check if the required fields are all present
     */
     async checkFieldConstraints(sample) {
         for (const fieldGroup of this.requiredFields.values()) {
@@ -51,11 +63,12 @@ export default class SampleProcessor {
     async resolveFields(sample) {
         const originalValues = sample.getOrignalValues();
 
+        await Promise.all();
         for (const [key, originalValue] of originalValues) {
-            if (!this.registerFieldProcessor.has(key)) {
+            if (!this.fieldProcessors.has(key)) {
                 throw new Error(`Cannot resolve sample value for key '${key}', no field processor found!`);
             } else {
-                const processor = this.registerFieldProcessor.get(key);
+                const processor = this.fieldProcessors.get(key);
                 const resolvedValue = await processor.process(value);
                 sample.setResolvedValue(key, resolvedValue);
             }

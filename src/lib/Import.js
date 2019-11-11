@@ -1,6 +1,13 @@
 import Sample from './Sample.js';
 
 
+/**
+ * an abstract importer class that can be inherited from. 
+ *
+ * @class      Import (name)
+ */
+
+
 
 export default class Import {
 
