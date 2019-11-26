@@ -7,8 +7,10 @@ import FieldProcessor from '../src/lib/field/FieldProcessor.js';
 import MicroorganismProcessor from '../src/lib/field/MicroorganismProcessor.js';
 import UniqueIdentifierProcessor from '../src/lib/field/UniqueIdentifierProcessor.js';
 import SubstanceProcessor from '../src/lib/field/SubstanceProcessor.js';
-
-
+import QualitativeResistanceProcessor from '../src/lib/field/QualitativeResistanceProcessor.js'
+import QuantititiveResistanceMicProcessor from '../src/lib/field/QuantititiveResistanceMicProcessor.js';
+import GenotypeResistanceProcessor from '../src/lib/field/GenotypeResistanceProcessor.js';
+import CountryProcessor from '../src/lib/field/CountryProcessor.js';
 
 
 
@@ -93,17 +95,16 @@ section('Field Processors', (section) => {
     });
 
 
-   
-    section('SubstanceProcessor', (section) => {
+
+
+    section('QualitativeResistanceProcessor', (section) => {
 
         section.test('invald value', async() => {
             const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
             const config = new RainbowConfig(configDir);
             await config.load();
 
-            const processor = new SubstanceProcessor({
-                apiHost: config.get('core-data.host'),
-            });
+            const processor = new QualitativeResistanceProcessor();
 
             const value = await processor.process(1).catch(err => 1);
             assert.equal(value, 1);
@@ -116,12 +117,130 @@ section('Field Processors', (section) => {
             await config.load();
 
 
-            const processor = new SubstanceProcessor({
-                apiHost: config.get('core-data.host'),
-            });
+            const processor = new QualitativeResistanceProcessor();
 
-            const value = await processor.process('Ceftriaxone');
-            assert.equal(value, 9);
+            const value = await processor.process('R');
+            assert.equal(value, 'r');
+        });
+    });
+
+
+
+
+    section('QuantititiveResistanceMicProcessor', (section) => {
+
+        section.test('non numeric', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+            const processor = new QuantititiveResistanceMicProcessor();
+            const value = await processor.process('1').catch(err => 1);
+            assert.equal(value, 1);
+        });
+
+        section.test('too low', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+            const processor = new QuantititiveResistanceMicProcessor();
+            const value = await processor.process(-0.1).catch(err => 1);
+            assert.equal(value, 1);
+        });
+
+        section.test('too high', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+            const processor = new QuantititiveResistanceMicProcessor();
+            const value = await processor.process(10000).catch(err => 1);
+            assert.equal(value, 1);
+        });
+
+
+        section.test('valid number', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+
+            const processor = new QuantititiveResistanceMicProcessor();
+            const value = await processor.process(1.11111);
+            assert.equal(value, 1.11111);
+        });
+
+
+        section.test('valid number as astring', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+
+            const processor = new QuantititiveResistanceMicProcessor();
+            const value = await processor.process('1.11111');
+            assert.equal(value, 1.11111);
+        });
+    });
+
+
+
+
+    section('GenotypeResistanceProcessor', (section) => {
+
+        section.test('invald value', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+            const processor = new GenotypeResistanceProcessor();
+
+            const value = await processor.process(1).catch(err => 1);
+            assert.equal(value, 1);
+        });
+
+
+        section.test('valid value', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+
+            const processor = new GenotypeResistanceProcessor();
+
+            const value = await processor.process('R');
+            assert.equal(value, 'r');
+        });
+    });
+
+
+
+
+    section('CountryProcessor', (section) => {
+
+        section.test('invald value', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+            const processor = new GenotypeResistanceProcessor();
+
+            const value = await processor.process(1).catch(err => 1);
+            assert.equal(value, 1);
+        });
+
+
+        section.test('valid value', async() => {
+            const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
+            const config = new RainbowConfig(configDir);
+            await config.load();
+
+
+            const processor = new GenotypeResistanceProcessor();
+
+            const value = await processor.process('R');
+            assert.equal(value, 'r');
         });
     });
 
@@ -130,4 +249,3 @@ section('Field Processors', (section) => {
         sm.stopServices();
     });
 });
-ResistanceProcessor

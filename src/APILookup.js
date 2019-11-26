@@ -14,6 +14,7 @@ export default class Lookup {
         filterProperty = 'identifier',
         selectionField = 'id',
     }) {
+
         // the resource to load
         this.host = apiHost;
         this.resource = resource;
