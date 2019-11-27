@@ -1,4 +1,14 @@
-export default class QuantititiveResistanceMicProcessor {
+import FieldProcessor from './FieldProcessor.js';
+
+
+export default class QuantititiveResistanceMicProcessor extends FieldProcessor {
+
+
+    constructor() {
+        super({
+            name: 'QuantititiveResistanceMic',
+        });
+    }
 
 
 
@@ -8,11 +18,11 @@ export default class QuantititiveResistanceMicProcessor {
         }
 
         if (typeof value !== 'number') {
-            throw new Error(`[Sample.Field.QuantititiveResistanceMic] Invalid value '${value}': expected a number, got ${typeof value}!`);
+            this.failValidation(`Invalid value '${value}': expected a number, got ${typeof value}!`);
         }
 
         if (value >= 10000 || value < 0) {
-            throw new Error(`[Sample.Field.QuantititiveResistanceMic] Invalid value '${value}': length must be 1!`);
+            this.failValidation(`Invalid value '${value}': length must be 1!`);
         }
 
         return value;

@@ -1,38 +1,19 @@
-import APILookup from '../../APILookup.js';
+import StringProcessor from './StringProcessor.js';
 
 
 
-export default class SubstanceProcessor {
+export default class SubstanceProcessor extends StringProcessor {
 
 
     constructor({
-        apiHost,
-    }) {
-        this.lookup = new APILookup({
-            apiHost: apiHost,
-            resource: 'anresis.antibioticMapping',
-            filterProperty: 'anresisAntibiotic',
-            selectionField: 'id_compound',
+        name = 'Substance',
+    } = {}) {
+        super({
+            name,
+            minLength: 1,
+            maxLength: 100,
+            trim: true,
+            regExp: /^[a-z0-9 -_]+$/i,
         });
-    }
-
-
-
-    async process(value) {
-        if (typeof value !== 'string') {
-            throw new Error(`[Sample.Field.Substance] Invalid value '${value}': expected string, got ${typeof value}!`);
-        }
-
-        if (value.length < 1 || value.length > 100) {
-            throw new Error(`[Sample.Field.Substance] Invalid value '${value}': expected string with a length between 1 and 100, got ${value.length}`);
-        }
-
-        if (!(/^[a-z0-9 -_]+$/i.test(value))) {
-            throw new Error(`[Sample.Field.Substance] Invalid value '${value}': expected characters [a-z0-9 -_]!`);
-        }
-
-        const id = await this.lookup.get(value);
-
-        return id;
     }
 }

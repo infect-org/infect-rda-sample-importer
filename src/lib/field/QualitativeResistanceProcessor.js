@@ -1,21 +1,29 @@
-export default class QualitativeResistanceProcessor {
+import StringProcessor from './StringProcessor.js';
+
+
+export default class QualitativeResistanceProcessor extends StringProcessor {
+
+
+    constructor() {
+        super({
+            name: 'QialitativeResistance',
+            minLength: 1,
+            maxLength: 1,
+            trim: true,
+            toLowerCase: true,
+        });
+    }
+
 
 
 
     async process(value) {
-        if (typeof value !== 'string') {
-            throw new Error(`[Sample.Field.QialitativeResistance] Invalid value '${value}': expected string, got ${typeof value}!`);
-        }
-
-        if (value.length !== 1) {
-            throw new Error(`[Sample.Field.QialitativeResistance] Invalid value '${value}': length must be 1!`);
-        }
+        value = await super.process(value);
 
         if (!(/[ris]{1}/i.test(value))) {
-            throw new Error(`[Sample.Field.QialitativeResistance] Invalid value '${value}': value must be either r, i or s!`);
+            this.failValidation(`Invalid value '${value}': value must be either r, i or s!`);
         }
 
-
-        return value.toLowerCase();
+        return value;
     }
 }

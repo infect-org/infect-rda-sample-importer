@@ -1,4 +1,6 @@
 import APILookup from '../../APILookup.js';
+import StringProcessor from './StringProcessor.js';
+
 
 
 const countries = new Set(['AFG', 'ALB', 'DZA', 'ASM', 'AND', 'AGO', 'AIA', 'ATA', 
@@ -36,39 +38,41 @@ const countries = new Set(['AFG', 'ALB', 'DZA', 'ASM', 'AND', 'AGO', 'AIA', 'ATA
 
 
 
-export default class CountryProcessor {
+export default class CountryProcessor extends StringProcessor {
+
 
 
     constructor({
         apiHost,
     }) {
+        super({
+            name: 'Country',
+            minLength: 3,
+            maxLength: 3,
+            toUpperCase: true,
+            trim: true,
+        });
+
         this.lookup = new APILookup({
             apiHost: apiHost,
             resource: 'generics.country',
-            filterProperty: 'iso3',
+            filterProperty: 'identifier',
             selectionField: 'id',
         });
     }
 
 
     async process(value) {
-        if (typeof value !== 'string') {
-            throw new Error(`[Sample.Field.Country] Invalid value '${value}': expected a string, got ${typeof value}!`);
-        }
-
-        if (value.length !== 3) {
-            throw new Error(`[Sample.Field.Country] Invalid value '${value}': length must be 3!`);
-        }
-
-        value = value.toUpperCase();
-
+        value = await super.process(value);
 
         if (!countries.has(value)) {
-            throw new Error(`[Sample.Field.Country] Invalid value '${value}': the value is not a valid iso 3166-1 alpha-3 code!`);
+            this.failValidation(`Invalid value '${value}': the value is not a valid iso 3166-1 alpha-3 code!`);
         }
 
-        const id = await this.lookup.get(value);
-
-        return id;
+        try {
+            return await this.lookup.get(value);
+        } catch (err) {
+            this.fail(err.message);
+        }
     }
 }
