@@ -13,8 +13,21 @@ export default class FieldProcessor {
      */
     constructor({
         name,
+        required = false,
+        fieldName,
     }) {
+        if (fieldName === undefined || fieldName === null) throw new Error(`Missing parameter 'fieldName'!`);
+        if (!name) throw new Error(`Missing parameter 'name'!`);
+        
+        this.fieldName = fieldName;
+        this.required = required;
         this.name = name;
+    }
+
+
+
+    getFieldName() {
+        return this.fieldName;
     }
 
 
@@ -37,6 +50,27 @@ export default class FieldProcessor {
     fail(message) {
         throw new ValidationError(`[Sample.Field.${this.name}] ${message}`);
     }
+
+
+
+
+    /**
+     * process a sample
+     *
+     * @param      {<type>}  sample  The sample
+     */
+    async processSample(sample) {
+        const value = sample.getOriginalValue(this.fieldName);
+
+
+        if (this.required && !sample.hasOriginalValue(this.fieldName)) {
+            this.failValidation(`Value is required but was not delivered!`);
+        }
+
+        const processedValue = await this.process(value);
+        sample.setProcessedValue(this.fieldName, processedValue);
+    }
+
 
 
 

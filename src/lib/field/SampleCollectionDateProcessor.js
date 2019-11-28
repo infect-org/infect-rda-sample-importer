@@ -7,6 +7,7 @@ export default class SampleCollectionDateProcessor extends StringProcessor {
     constructor() {
         super({
             name: 'SampleCollectionDate',
+            fieldName: 'sample-collection-date',
             minLength: 10,
             maxLength: 10,
             trim: true,

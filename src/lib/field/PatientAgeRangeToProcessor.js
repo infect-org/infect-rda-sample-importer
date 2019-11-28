@@ -10,9 +10,10 @@ export default class PatientAgeRangeToProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'PatientAgeRangeTo',
+            fieldName: 'patient-age-range-to',
         });
 
-        
+
         this.multipliers = new Map([
             ['d', 1],
             ['m', 30.4375], // mean year / 12

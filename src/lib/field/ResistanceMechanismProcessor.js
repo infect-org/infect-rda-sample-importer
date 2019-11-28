@@ -9,6 +9,7 @@ export default class ResistanceMechanismProcessor extends StringProcessor {
     } = {}) {
         super({
             name,
+            fieldName: 'resistance-mechanism',
             minLength: 1,
             maxLength: 50,
             trim: true,

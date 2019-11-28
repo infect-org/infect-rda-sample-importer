@@ -9,6 +9,7 @@ export default class AnimalProcessor extends StringProcessor {
     } = {}) {
         super({
             name,
+            fieldName: 'animal',
             minLength: 1,
             maxLength: 50,
             trim: true,

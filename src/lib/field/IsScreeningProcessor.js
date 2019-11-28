@@ -8,6 +8,7 @@ export default class IsScreeningProcessor extends BooleanProcessor {
     constructor() {
         super({
             name: 'IsScreening',
+            fieldName: 'is-screening',
         });
     }
 }

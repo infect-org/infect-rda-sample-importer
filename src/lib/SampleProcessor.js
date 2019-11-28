@@ -35,7 +35,7 @@ export default class SampleProcessor {
      * @param      {Object}   sample  instance of the Sample Class
      */
     async process(sample) {
-        await this.resolveFields();
+        await this.resolveFields(sample);
         await this.checkFieldConstraints();
     }
 

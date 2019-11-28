@@ -8,6 +8,7 @@ export default class PatientSettingProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'PatientSetting',
+            fieldName: 'patient-setting',
         });
     }
 

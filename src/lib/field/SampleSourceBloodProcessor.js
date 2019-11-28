@@ -8,6 +8,7 @@ export default class SampleSourceBloodProcessor extends BooleanProcessor {
     constructor() {
         super({
             name: 'SampleSourceBlood',
+            fieldName: 'sample-source-blood',
         });
     }
 }

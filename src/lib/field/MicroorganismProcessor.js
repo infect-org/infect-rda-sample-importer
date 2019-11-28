@@ -9,10 +9,12 @@ export default class MicroorganismProcessor extends StringProcessor {
     } = {}) {
         super({
             name,
+            fieldName: 'microorganism',
             minLength: 1,
             maxLength: 100,
             trim: true,
             regExp: /^[a-z0-9 -_]+$/i,
+            required: true,
         });
     }
 }

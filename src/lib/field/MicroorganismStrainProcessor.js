@@ -9,6 +9,7 @@ export default class MicroorganismStrainProcessor extends StringProcessor {
     } = {}) {
         super({
             name,
+            fieldName: 'microorganism-strain',
             minLength: 1,
             maxLength: 100,
             trim: true,

@@ -47,11 +47,14 @@ export default class CountryProcessor extends StringProcessor {
     }) {
         super({
             name: 'Country',
+            fieldName: 'country',
             minLength: 3,
             maxLength: 3,
             toUpperCase: true,
             trim: true,
+            required: true,
         });
+
 
         this.lookup = new APILookup({
             apiHost: apiHost,

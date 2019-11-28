@@ -10,6 +10,7 @@ export default class PatientAgeRangeFromProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'PatientAgeRangeFrom',
+            fieldName: 'patient-age-range-from',
         });
 
         

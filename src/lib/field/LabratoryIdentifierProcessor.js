@@ -5,10 +5,11 @@ export default class LabratoryIdentifierProcessor extends StringProcessor {
 
 
     constructor({
-        name = 'LabratoryIdentifier',
+        name = 'LaboratoryIdentifier',
     } = {}) {
         super({
             name,
+            fieldName: 'laboratory-identifier',
             minLength: 1,
             maxLength: 50,
             trim: true,

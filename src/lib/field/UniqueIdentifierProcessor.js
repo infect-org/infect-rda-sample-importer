@@ -11,6 +11,8 @@ export default class UniqueIdentifierProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'UniqueIdentifier',
+            fieldName: 'unique-identifier',
+            required: true,
         });
     }
 

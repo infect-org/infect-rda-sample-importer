@@ -8,8 +8,6 @@ import CountryProcessor from '../src/lib/field/CountryProcessor.js'
 
 section.continue('Field Processors', (section) => {
 
-
-
     section('CountryProcessor', (section) => {
 
         section.test('invald value', async() => {

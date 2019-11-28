@@ -7,6 +7,7 @@ export default class QuantititiveResistanceMicProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'QuantititiveResistanceMic',
+            fieldName: 'resistance-quantitative-mic',
         });
     }
 

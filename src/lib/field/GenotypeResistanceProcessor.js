@@ -7,6 +7,7 @@ export default class GenotypeResistanceProcessor extends StringProcessor {
     constructor() {
         super({
             name: 'GenotypeResistance',
+            fieldName: 'resistance-genotype',
             minLength: 1,
             maxLength: 1,
             trim: true,

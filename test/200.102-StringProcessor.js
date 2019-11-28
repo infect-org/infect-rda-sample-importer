@@ -10,7 +10,7 @@ section.continue('Field Processors', (section) => {
     section('StringProcessor', (section) => {
         
         section.test('invalid value', async() => {
-            const processor = new StringProcessor({name: 'b'});
+            const processor = new StringProcessor({name: 'b', fieldName: 'b'});
             const value = await processor.process(1).catch(e => e.message);
             assert.equal(value, `[Sample.Field.b] Invalid value '1': expected a string, got number!`);
         });
@@ -20,6 +20,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 minLength: 2,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('a').catch(e => 1), 1);
@@ -31,6 +32,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 maxLength: 2,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('aaa').catch(e => 1), 1);
@@ -42,6 +44,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 trim: true,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('  aa'), 'aa');
@@ -52,6 +55,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 toLowerCase: true,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('AA'), 'aa');
@@ -62,6 +66,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 toUpperCase: true,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('a'), 'A');
@@ -72,6 +77,7 @@ section.continue('Field Processors', (section) => {
             const processor = new StringProcessor({
                 name: 'b',
                 regExp: /^a{2}$/i,
+                fieldName: 'b',
             });
 
             assert.equal(await processor.process('aa'), 'aa');

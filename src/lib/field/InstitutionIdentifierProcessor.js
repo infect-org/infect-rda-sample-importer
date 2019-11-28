@@ -9,6 +9,7 @@ export default class InstitutionIdentifierProcessor extends StringProcessor {
     } = {}) {
         super({
             name,
+            fieldName: 'institution-identifier',
             minLength: 1,
             maxLength: 50,
             trim: true,
