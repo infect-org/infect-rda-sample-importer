@@ -1,3 +1,4 @@
+
 /**
  * The sample processor is responsible for processing samples that are passed to it. It normalizes
  * values by using fieldProcessors that may convert incoming values into a standardized format. It
@@ -35,45 +36,11 @@ export default class SampleProcessor {
      * @param      {Object}   sample  instance of the Sample Class
      */
     async process(sample) {
-        await this.resolveFields(sample);
-        await this.checkFieldConstraints();
+        await sample.process(this.fieldProcessors);
     }
 
 
 
-
-
-    /**
-    * check if the required fields are all present
-    */
-    async checkFieldConstraints(sample) {
-        for (const fieldGroup of this.requiredFields.values()) {
-            if (!fieldGroup.some(fieldName => sample.hasResolvedValue(fieldName))) {
-                throw new Error(`One of the required fields in the field group '${fieldGroup.join(`', '`)}' has no value!`);
-            }
-        }
-    }
-
-
-
-
-    /**
-    * convert the incoming value to an outgoing value
-    */
-    async resolveFields(sample) {
-        const originalValues = sample.getOrignalValues();
-
-        await Promise.all();
-        for (const [key, originalValue] of originalValues) {
-            if (!this.fieldProcessors.has(key)) {
-                throw new Error(`Cannot resolve sample value for key '${key}', no field processor found!`);
-            } else {
-                const processor = this.fieldProcessors.get(key);
-                const resolvedValue = await processor.process(value);
-                sample.setResolvedValue(key, resolvedValue);
-            }
-        }
-    }
 
 
 

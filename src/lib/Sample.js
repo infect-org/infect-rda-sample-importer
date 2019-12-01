@@ -1,3 +1,6 @@
+import ValidationError from './ValidationError.js';
+
+
 /**
  * stores one sample
  *
@@ -11,7 +14,43 @@ export default class Sample {
     constructor() {
         this.originalValues = new Map();
         this.processedValues = new Map();
+
+        this.errors = [];
+        this.validationErrors = [];
     }
+
+
+
+
+    hasErrors() {
+        return this.errors.length > 0;
+    }
+
+
+
+    isValid() {
+        return this.validationErrors.length === 0;
+    }
+
+
+    
+    async process(fieldProcessors) {
+        
+        // process this sample using the passed field processors. All in parallel.
+        const results = await Promise.all(Array.from(fieldProcessors.values()).map(async (processor) => {
+            await processor.processSample(this).catch((err) => {
+                if (err instanceof ValidationError) this.validationErrors.push(err);
+                else if (err instanceof Error) this.errors.push(err);
+                else throw new Error(`SampleProcessor ${processor.getName()} threw non Error!`);
+            });
+        }));
+
+        // errors are unrecoverable. The import has to die because of them.
+        if (this.hasErrors()) {
+            throw new Error(`SampleProcessor failed to process the sample because of one or more errors: '${this.errors.map(e => e.message).join(`', '`)}'`);
+        }
+    }
+
 
 
 

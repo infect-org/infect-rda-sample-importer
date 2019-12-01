@@ -26,6 +26,11 @@ export default class FieldProcessor {
 
 
 
+    getName() {
+        return this.name;
+    }
+
+
     getFieldName() {
         return this.fieldName;
     }
