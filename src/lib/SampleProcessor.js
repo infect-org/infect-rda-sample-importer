@@ -24,8 +24,25 @@ export default class SampleProcessor {
      *
      * @param      {Array}  samples  the samples to process
      */
-    processSamples(samples) {
+    async processSamples(samples) {
+        const validSamples = [];
+        const invalidSample = [];
 
+        await Promise.all(samples.map(async (sample) => {
+            await this.process.sample(sample);
+
+            if (sample.isValid()) {
+                validSamples.push(sample);
+            } else {
+                invalidSample.push(sample);
+            }
+        }));
+
+
+        return {
+            invalidSample,
+            validSamples,
+        }
     }
 
 
@@ -49,19 +66,7 @@ export default class SampleProcessor {
      *
      * @param      {object}  processor  The processor
      */
-    registerFieldProcessor(inputFieldName, processor) {
-        this.fieldProcessors.set(inputFieldName, processor);
-    }
-
-
-
-    /**
-     * set the fields that are required. if multiple fields are passed, just one
-     * of them needs to be present
-     *
-     * @param      {Array}  fields  The fields
-     */
-    setRequiredField(...fields) {
-        this.requiredFields.add(fields);
+    registerFieldProcessor(processor) {
+        this.fieldProcessors.add(processor);
     }
 }

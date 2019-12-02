@@ -46,6 +46,14 @@ section('Sample', (section) => {
             assert.equal(sample.getOriginalValue('a'), null);
             assert(!sample.hasOriginalValue('a'));
         });
+
+        section.test('set original data', async() => {
+            const sample = new Sample();
+
+            sample.setOriginalData({t: 45});
+            assert.equal(sample.getOriginalValue('t'), 45);
+            assert(sample.hasOriginalValue('t'));
+        });
     });
 
 

@@ -17,6 +17,10 @@ export default class Import {
         // how many records to read from the incoming data stream before they are 
         // passed to the sample processor and then the storage
         this.readSetSize = 100;
+
+
+        // holds all invaldi samples, so that they can be reported to the user
+        this.invalidSamples = [];
     }
 
 
@@ -60,7 +64,9 @@ export default class Import {
     async pipe(stream) {
         return new Promise((resolve, reject) => {
             stream.on('readable', () => {
-                this.consumeStream(stream);
+                this.consumeStream(stream).catch(err => {
+
+                });
             });
 
             stream.on('close', () => {
@@ -90,19 +96,47 @@ export default class Import {
 
         // collect n samples at a time, process them, then read more
         while(samples.length < this.readSetSize && rawInputRawSample = stream.read()) {
-            samples.push(rawInputRawSample);
+            const sample = new Sample();
+            sample.setOriginalData(sample);
+            samples.push(sample);
         }
 
 
-        // process the 
-        this.sampleProcessor.processSamples(samples).catch((err) => {
+        // process the set of samples
+        const result = await this.sampleProcessor.processSamples(samples).catch(err => err);
+
+
+        // stop processing if an erro was returne. the error will be handled by the pipe method
+        // so it's safe to jsut exit here.
+        if (result instanceof Error) {
             stream.destroy(err);
-        }).then(() => {
-            
-            if (stream.readable) {
-                this.consumeStream(stream);
-            }
-        });
+            return;
+        }
+
+
+        // sotre invalid sample for later use
+        if (result.invalidSamples.length) {
+            this.invalidSamples.push(...result.invalidSamples);
+        }
+
+
+        // send the smaple to the sotrage layer
+        await this.storeSamples(result.validSamples);
+
+
+        // continue to consume more samples?
+        if (stream.readable) {
+            this.consumeStream(stream);
+        }
+    }
+
+
+
+
+
+
+    async storeSamples(samples) {
+        
     }
 
 
@@ -115,4 +149,14 @@ export default class Import {
     async activate() {
 
     }
+}
+
+
+
+
+create(request) {
+    const csvStreamer = new CSVStreamer();
+    const 
+
+
 }
