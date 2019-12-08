@@ -52,6 +52,17 @@ export default class Sample {
     }
 
 
+
+    getValidationErrors() {
+        return this.validationErrors;
+    }
+
+
+    getValidationErrorString() {
+        if (!this.isValid()) {
+            return `Sample validation errors:\n- ${this.validationErrors.map(e => e.message).join(`\n- `)}`;
+        } else return null;
+    }
     
 
     /**

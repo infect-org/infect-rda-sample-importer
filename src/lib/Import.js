@@ -65,7 +65,7 @@ export default class Import {
         return new Promise((resolve, reject) => {
             stream.on('readable', () => {
                 this.consumeStream(stream).catch(err => {
-
+                    stream.destroy(err);
                 });
             });
 
@@ -109,18 +109,17 @@ export default class Import {
         // stop processing if an erro was returne. the error will be handled by the pipe method
         // so it's safe to jsut exit here.
         if (result instanceof Error) {
-            stream.destroy(err);
-            return;
+            throw result;
         }
 
 
-        // sotre invalid sample for later use
+        // store invalid sample for later use
         if (result.invalidSamples.length) {
             this.invalidSamples.push(...result.invalidSamples);
         }
 
 
-        // send the smaple to the sotrage layer
+        // send the smaple to the storage layer
         await this.storeSamples(result.validSamples);
 
 

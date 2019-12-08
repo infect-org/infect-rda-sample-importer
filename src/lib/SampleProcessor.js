@@ -13,8 +13,7 @@ export default class SampleProcessor {
 
 
     constructor() {
-        this.fieldProcessors = new Map();
-        this.requiredFields = new Set();
+        this.fieldProcessors = new Set();
     }
 
 
@@ -26,21 +25,21 @@ export default class SampleProcessor {
      */
     async processSamples(samples) {
         const validSamples = [];
-        const invalidSample = [];
+        const invalidSamples = [];
 
         await Promise.all(samples.map(async (sample) => {
-            await this.process.sample(sample);
+            await this.process(sample);
 
             if (sample.isValid()) {
                 validSamples.push(sample);
             } else {
-                invalidSample.push(sample);
+                invalidSamples.push(sample);
             }
         }));
 
 
         return {
-            invalidSample,
+            invalidSamples,
             validSamples,
         }
     }

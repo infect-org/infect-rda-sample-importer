@@ -25,5 +25,22 @@ section('Sample II', (section) => {
             assert.equal(sample.isValid(), false);
             assert.equal(sample.hasErrors(), false);
         });
+
+
+        section.test('process method: valid values', async() => {
+            const sample = new Sample();
+
+            sample.setOriginalValue('unique-identifier', 'b59c67bf196a4758191e42f76670ceba');
+            sample.setOriginalValue('resistance-qualitative', '  R ');
+
+            const fieldProcessors = new Set();
+            fieldProcessors.add(new UniqueIdentifierProcessor());
+            fieldProcessors.add(new QualitativeResistanceProcessor());
+
+            await sample.process(fieldProcessors);
+
+            assert.equal(sample.isValid(), true);
+            assert.equal(sample.hasErrors(), false);
+        });
     });
 });

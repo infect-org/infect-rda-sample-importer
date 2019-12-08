@@ -29,3 +29,17 @@ class INFECTv2Sample extends Sample {
         this.setMappingProcessor(new RemoteAPIProcessor());
     }
 }
+
+
+
+const import = new Import();
+import.
+
+import.pipe(request);
+
+
+
+
+const httpHandler = new HTTPStreamHandler();
+httpHandler.pipe(request);
+
