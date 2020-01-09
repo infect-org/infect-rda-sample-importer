@@ -48,6 +48,7 @@ export default class CountryProcessor extends StringProcessor {
         super({
             name: 'Country',
             fieldName: 'country',
+            targetFieldName: 'countryId',
             minLength: 3,
             maxLength: 3,
             toUpperCase: true,
@@ -59,23 +60,23 @@ export default class CountryProcessor extends StringProcessor {
         this.lookup = new APILookup({
             apiHost: apiHost,
             resource: 'generics.country',
-            filterProperty: 'identifier',
+            filterProperty: 'code',
             selectionField: 'id',
         });
     }
 
 
-    async process(value) {
-        value = await super.process(value);
+      async process(value) {
+          value = await super.process(value);
 
-        if (!countries.has(value)) {
-            this.failValidation(`Invalid value '${value}': the value is not a valid iso 3166-1 alpha-3 code!`);
-        }
+          if (!countries.has(value)) {
+              this.failValidation(`Invalid value '${value}': the value is not a valid iso 3166-1 alpha-3 code!`);
+          }
 
-        try {
-            return await this.lookup.get(value);
-        } catch (err) {
-            this.fail(err.message);
-        }
-    }
+          try {
+              return await this.lookup.get(value);
+          } catch (err) {
+              this.fail(err.message);
+          }
+      }
 }

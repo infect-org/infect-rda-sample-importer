@@ -12,9 +12,22 @@
 export default class SampleProcessor {
 
 
-    constructor() {
+    constructor({
+        config,
+    }) {
+        this.config = config;
         this.fieldProcessors = new Set();
+        this.isLoaded = false;
     }
+
+
+
+
+
+    async load() {
+        this.isLoaded = true;
+    }
+
 
 
 
@@ -24,6 +37,10 @@ export default class SampleProcessor {
      * @param      {Array}  samples  the samples to process
      */
     async processSamples(samples) {
+        if (!this.isLoaded) {
+            throw new Error(`The sample processor is not loaded!`);
+        }
+
         const validSamples = [];
         const invalidSamples = [];
 
@@ -36,7 +53,6 @@ export default class SampleProcessor {
                 invalidSamples.push(sample);
             }
         }));
-
 
         return {
             invalidSamples,

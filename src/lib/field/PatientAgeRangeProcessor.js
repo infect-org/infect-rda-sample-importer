@@ -11,6 +11,7 @@ export default class ResistanceProcessor extends FieldProcessor {
     constructor() {
         super({
             name: 'PatientAgeRange',
+            fieldName: false,
         });
 
 
@@ -24,20 +25,26 @@ export default class ResistanceProcessor extends FieldProcessor {
         const fromFieldName = this.patientAgeRangeFromProcessor.getFieldName();
         const toFieldName = this.patientAgeRangeToProcessor.getFieldName();
 
-        if (sample.hasOriginlaValue(fromFieldName) && !sample.hasOriginlaValue(toFieldName)) {
+        if (sample.hasOriginalValue(fromFieldName) && !sample.hasOriginalValue(toFieldName)) {
             this.failValidation(`PatientAgeRangeFrom value found. Missing PatientAgeRangeTo value!`);
         }
 
-        if (sample.hasOriginlaValue(toFieldName) && !sample.hasOriginlaValue(fromFieldName)) {
+        if (sample.hasOriginalValue(toFieldName) && !sample.hasOriginalValue(fromFieldName)) {
             this.failValidation(`PatientAgeRangeTo value found. Missing PatientAgeRangeFrom value!`);
         }
 
-        const fromValue = sample.getOriginlaValue(fromFieldName);
+        const fromValue = sample.getOriginalValue(fromFieldName);
         const processedFromValue = await this.patientAgeRangeFromProcessor.process(fromValue);
-        sample.setProcessedValue(fromFieldName, processedFromValue);
 
-        const toValue = sample.getOriginlaValue(toFieldName);
-        const processedToValue = await this.patientAgeRangetoProcessor.process(toValue);
-        sample.setProcessedValue(toFieldName, processedToValue);
+        const toValue = sample.getOriginalValue(toFieldName);
+        const processedToValue = await this.patientAgeRangeToProcessor.process(toValue);
+
+
+        if (fromValue > toValue) {
+            this.failValidation(`Invalid age rage: lower bound ${fromValue} is bigger then the upper bound ${toValue}!`);
+        }
+
+        sample.setProcessedValue(this.patientAgeRangeFromProcessor.getTargetFieldName(), processedFromValue);
+        sample.setProcessedValue(this.patientAgeRangeToProcessor.getTargetFieldName(), processedToValue);
     }
 }

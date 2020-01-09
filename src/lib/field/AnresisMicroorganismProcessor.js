@@ -9,7 +9,8 @@ export default class AnresisMicroorganismProcessor extends MicroorganismProcesso
         apiHost,
     }) {
         super({
-            name: 'AnresisMicroorganism'
+            name: 'AnresisMicroorganism',
+            targetFieldName: 'microorganismId',
         });
 
         this.lookup = new APILookup({

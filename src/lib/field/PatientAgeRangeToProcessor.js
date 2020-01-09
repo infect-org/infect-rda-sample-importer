@@ -28,7 +28,7 @@ export default class PatientAgeRangeToProcessor extends FieldProcessor {
         }
 
         if (!(/\d+[dmy]{1}/i.test(value))) {
-            this.failValidation(`Invalid value '${value}': value must mathc the format /\\d+[dmy]{1}/i!`);
+            this.failValidation(`Invalid value '${value}': value must match the format /\\d+[dmy]{1}/i!`);
         }
 
         const parts = /(?<value>\d+)(?<unit>[dmy]){1}/i.exec(value);

@@ -11,6 +11,7 @@ export default class SubstanceProcessor extends StringProcessor {
         super({
             name,
             fieldName: 'substance',
+            targetFieldName: 'substanceId',
             minLength: 1,
             maxLength: 100,
             trim: true,

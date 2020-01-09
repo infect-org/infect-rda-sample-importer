@@ -1,14 +1,26 @@
 import FieldProcessor from './FieldProcessor.js';
-
+import APILookup from '../../APILookup.js';
 
 
 export default class PatientSettingProcessor extends FieldProcessor {
 
 
-    constructor() {
+    
+    constructor({
+        apiHost,
+    }) {
         super({
             name: 'PatientSetting',
             fieldName: 'patient-setting',
+            targetFieldName: 'patientSettingId',
+        });
+
+
+        this.lookup = new APILookup({
+            apiHost: apiHost,
+            resource: 'generics.patientSetting',
+            filterProperty: 'identifier',
+            selectionField: 'id',
         });
     }
 
@@ -19,13 +31,13 @@ export default class PatientSettingProcessor extends FieldProcessor {
         }
 
         if (value.trim().toLowerCase() === 'inpatient') {
-            return 'inpatient';
+            value = 'inpatient';
+        } else if (value.trim().toLowerCase() === 'outpatient') {
+            value = 'outpatient';
+        } else {
+            return this.failValidation(`Invalid value '${value}': expected the value 'inpatient' or 'outpatient'!`);
         }
 
-        if (value.trim().toLowerCase() === 'outpatient') {
-            return 'outpatient';
-        }
-
-        this.failValidation(`Invalid value '${value}': expected the value 'inpatient' or 'outpatient'!`);
+        return await this.lookup.get(value);
     }
 }

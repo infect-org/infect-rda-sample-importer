@@ -10,6 +10,7 @@ export default class MicroorganismProcessor extends StringProcessor {
         super({
             name,
             fieldName: 'microorganism',
+            targetFieldName: 'microorganismId',
             minLength: 1,
             maxLength: 100,
             trim: true,

@@ -15,8 +15,8 @@ section.continue('Field Processors', (section) => {
             sample.setOriginalValue('resistance-qualitative', ' R');
 
             await processor.processSample(sample);
-            assert(sample.hasProcessedValue('resistance-qualitative'));
-            assert.equal(sample.getProcessedValue('resistance-qualitative'), 'r');
+            assert(sample.hasProcessedValue('resistanceQualitative'));
+            assert.equal(sample.getProcessedValue('resistanceQualitative'), 'r');
         });
 
         section.test('resistance-genotype', async() => {
@@ -26,8 +26,8 @@ section.continue('Field Processors', (section) => {
             sample.setOriginalValue('resistance-genotype', ' R');
 
             await processor.processSample(sample);
-            assert(sample.hasProcessedValue('resistance-genotype'));
-            assert.equal(sample.getProcessedValue('resistance-genotype'), 'r');
+            assert(sample.hasProcessedValue('resistanceGenotype'));
+            assert.equal(sample.getProcessedValue('resistanceGenotype'), 'r');
         });
 
         section.test('resistance-quantitative-mic', async() => {
@@ -37,8 +37,8 @@ section.continue('Field Processors', (section) => {
             sample.setOriginalValue('resistance-quantitative-mic', .5555);
 
             await processor.processSample(sample);
-            assert(sample.hasProcessedValue('resistance-quantitative-mic'));
-            assert.equal(sample.getProcessedValue('resistance-quantitative-mic'), 0.5555);
+            assert(sample.hasProcessedValue('resistanceQuantitativeMic'));
+            assert.equal(sample.getProcessedValue('resistanceQuantitativeMic'), 0.5555);
         });
 
         section.test('missing value', async() => {

@@ -15,10 +15,12 @@ export default class FieldProcessor {
         name,
         required = false,
         fieldName,
+        targetFieldName,
     }) {
         if (fieldName === undefined || fieldName === null) throw new Error(`Missing parameter 'fieldName'!`);
         if (!name) throw new Error(`Missing parameter 'name'!`);
         
+        this.targetFieldName = targetFieldName;
         this.fieldName = fieldName;
         this.required = required;
         this.name = name;
@@ -33,6 +35,11 @@ export default class FieldProcessor {
 
     getFieldName() {
         return this.fieldName;
+    }
+
+
+    getTargetFieldName() {
+        return (this.targetFieldName || this.fieldName).replace(/-(.)/gi, (v) => v.substr(1).toUpperCase());
     }
 
 
@@ -72,8 +79,10 @@ export default class FieldProcessor {
             this.failValidation(`Value is required but was not delivered!`);
         }
 
-        const processedValue = await this.process(value);
-        sample.setProcessedValue(this.fieldName, processedValue);
+        if (sample.hasOriginalValue(this.fieldName)) {
+            const processedValue = await this.process(value);
+            sample.setProcessedValue(this.getTargetFieldName(), processedValue);
+        }
     }
 
 

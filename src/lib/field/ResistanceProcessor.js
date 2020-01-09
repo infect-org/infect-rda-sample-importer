@@ -33,7 +33,7 @@ export default class ResistanceProcessor extends FieldProcessor {
 
             valueFound = true;
 
-            sample.setProcessedValue(fieldName, processedValue);
+            sample.setProcessedValue(this.genotypeResistanceProcessor.getTargetFieldName(), processedValue);
         }
 
         if (sample.hasOriginalValue(this.qualitativeResistanceProcessor.getFieldName())) {
@@ -43,7 +43,7 @@ export default class ResistanceProcessor extends FieldProcessor {
 
             valueFound = true;
 
-            sample.setProcessedValue(fieldName, processedValue);
+            sample.setProcessedValue(this.qualitativeResistanceProcessor.getTargetFieldName(), processedValue);
         }
 
         if (sample.hasOriginalValue(this.quantititiveResistanceMicProcessor.getFieldName())) {
@@ -53,7 +53,7 @@ export default class ResistanceProcessor extends FieldProcessor {
 
             valueFound = true;
 
-            sample.setProcessedValue(fieldName, processedValue);
+            sample.setProcessedValue(this.quantititiveResistanceMicProcessor.getTargetFieldName(), processedValue);
         }
 
         if (!valueFound) {

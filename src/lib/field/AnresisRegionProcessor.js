@@ -1,23 +1,23 @@
 import APILookup from '../../APILookup.js';
-import SubstanceProcessor from './SubstanceProcessor.js';
+import RegionProcessor from './RegionProcessor.js';
 
 
-export default class AnresisSubstanceProcessor extends SubstanceProcessor {
+export default class AnresisMicroorganismProcessor extends RegionProcessor {
 
 
     constructor({
         apiHost,
     }) {
         super({
-            name: 'AnresisSubstance',
-            targetFieldName: 'substanceId',
+            name: 'AnresisRegion',
+            targetFieldName: 'regionId',
         });
-        
+
         this.lookup = new APILookup({
             apiHost: apiHost,
-            resource: 'anresis.antibioticMapping',
-            filterProperty: 'anresisAntibiotic',
-            selectionField: 'id_compound',
+            resource: 'anresis.regionMapping',
+            filterProperty: 'anresisRegion',
+            selectionField: 'id_region',
         });
     }
 

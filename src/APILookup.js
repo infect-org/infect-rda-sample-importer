@@ -49,7 +49,7 @@ export default class Lookup {
     async get(key) {
         if (this.cache.has(key)) return this.cache.get(key);
         else {
-            const promise = this.httpClient.get(`${this.host}/${this.resource}`)
+            const promise = this.httpClient.get(`${this.host}/core-data/v1/${this.resource}`)
                 .setHeader('filter', `${this.property}=${key}`)
                 .send().then(async (response) => {
                     const data = await response.getData();

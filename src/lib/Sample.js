@@ -54,7 +54,7 @@ export default class Sample {
 
 
     getValidationErrors() {
-        return this.validationErrors;
+        return this.validationErrors.map(e => e.message);
     }
 
 
@@ -103,6 +103,8 @@ export default class Sample {
         for (const [key, value] of Object.entries(data)) {
             this.setOriginalValue(key, value);
         }
+
+        return this;
     }
 
 
@@ -139,6 +141,21 @@ export default class Sample {
         this.processedValues.set(name, value);
     }
 
+
+
+    getJSONReport() {
+        const data = {
+            isValid: this.isValid(),
+            originalValues: {},
+            processedValues: this.toJSON(),
+        };
+
+        for (const [key, value] of this.originalValues.entries()) {
+            data.originalValues[key] = value;
+        }
+
+        return data;
+    }
 
 
 
