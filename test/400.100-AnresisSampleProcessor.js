@@ -3,20 +3,17 @@ import assert from 'assert';
 import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
 import Sample from '../src/lib/Sample.js';
 import { Transform } from 'stream';
-import parse from 'csv-parse';
 import path from 'path';
 import RainbowConfig from '@rainbow-industries/rainbow-config';
-import fs from 'fs';
 import ServiceManager from '@infect/rda-service-manager';
+import { AnresisTestData } from '@infect/rda-fixtures';
 
-const { promises: { readFile } } = fs;
 
 
 
 
 
 section('AnresisSample Processor', (section) => {
-    let rows;
     let sm;
 
     section.setup(async () => {
@@ -26,19 +23,6 @@ section('AnresisSample Processor', (section) => {
         
         await sm.startServices('@infect/rda-service-registry');
         await sm.startServices('@infect/api');
-
-
-        const filePath = path.join(path.dirname(new URL(import.meta.url).pathname), './data/new-anresis-format.csv');
-        const data = await readFile(filePath);
-        
-        rows = await new Promise((resolve, reject) => {
-            parse(data, {
-                columns: true,
-            }, (err, records) => {
-                if (err) reject(err);
-                else resolve(records);
-            });
-        });
     });
     
 
@@ -51,6 +35,10 @@ section('AnresisSample Processor', (section) => {
 
         const processor = new AnresisSampleProcessor({ config });
         await processor.load();
+
+        
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
         const samples = rows.map((sampleData) => {
             return new Sample().setOriginalData(sampleData);

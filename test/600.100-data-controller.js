@@ -1,19 +1,14 @@
 import section from 'section-tests';
 import assert from 'assert';
 import ServiceManager from '@infect/rda-service-manager';
-import parse from 'csv-parse';
 import path from 'path';
-import fs from 'fs';
 import Service from '../index.js';
 import HTTP2Client from '@distributed-systems/http2-client';
-
-
-const { promises: { readFile } } = fs;
+import { AnresisTestData } from '@infect/rda-fixtures';
 
 
 section('Data Controller', (section) => {
     let sm;
-    let rows;
 
     section.setup(async () => {
         sm = new ServiceManager({
@@ -23,19 +18,6 @@ section('Data Controller', (section) => {
         await sm.startServices('@infect/rda-service-registry');
         await sm.startServices('@infect/infect-rda-sample-storage');
         await sm.startServices('@infect/api');
-
-
-        const filePath = path.join(path.dirname(new URL(import.meta.url).pathname), './data/new-anresis-format.csv');
-        const data = await readFile(filePath);
-        
-        rows = await new Promise((resolve, reject) => {
-            parse(data, {
-                columns: true,
-            }, (err, records) => {
-                if (err) reject(err);
-                else resolve(records);
-            });
-        });
     });
     
 
@@ -56,6 +38,10 @@ section('Data Controller', (section) => {
 
         const { id } = await response.getData();
         assert(id);
+
+
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
 
         const dataResponse = await client.post(`http://l.dns.porn:${port}/infect-rda-sample-import.data`).expect(201).send({
@@ -93,6 +79,9 @@ section('Data Controller', (section) => {
         assert(id);
 
 
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
+
         const dataResponse = await client.post(`http://l.dns.porn:${port}/infect-rda-sample-import.data`).expect(201).send({
             id,
             records: rows,
@@ -127,6 +116,9 @@ section('Data Controller', (section) => {
         const { id } = await response.getData();
         assert(id);
 
+
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
         const dataResponse = await client.post(`http://l.dns.porn:${port}/infect-rda-sample-import.data`).expect(201).query({
             'return-data': true,
@@ -166,6 +158,9 @@ section('Data Controller', (section) => {
         const { id } = await response.getData();
         assert(id);
 
+
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
         const dataResponse = await client.post(`http://l.dns.porn:${port}/infect-rda-sample-import.data`).expect(201).query({
             'return-invalid-data': true,

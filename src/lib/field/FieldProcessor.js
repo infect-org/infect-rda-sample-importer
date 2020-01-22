@@ -80,8 +80,21 @@ export default class FieldProcessor {
         }
 
         if (sample.hasOriginalValue(this.fieldName)) {
-            const processedValue = await this.process(value);
-            sample.setProcessedValue(this.getTargetFieldName(), processedValue);
+            try {
+                const processedValue = await this.process(value);
+                sample.setProcessedValue(this.getTargetFieldName(), processedValue);
+            } catch (err) {
+                if (err.failedLookup) {
+                    sample.setFailedFieldValidationData({
+                        inputName: this.getFieldName(),
+                        outputName: this.getTargetFieldName(),
+                        inputValue: value,
+                        type: 'failed-mapping',
+                    });
+
+                    this.failValidation(err.message);
+                } else throw err;
+            }
         }
     }
 

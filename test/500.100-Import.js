@@ -6,18 +6,12 @@ import RegistryClient from '@infect/rda-service-registry-client';
 import Importer from '../src/lib/Importer.js';
 import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
 import InfectSampleStorageClient from '../src/lib/InfectSampleStorageClient.js';
-import parse from 'csv-parse';
 import path from 'path';
-import fs from 'fs';
-import Sample from '../src/lib/Sample.js';
-
-const { promises: { readFile } } = fs;
-
+import { AnresisTestData } from '@infect/rda-fixtures';
 
 
 section('Import', (section) => {
     let sm;
-    let rows;
 
     section.setup(async () => {
         sm = new ServiceManager({
@@ -27,19 +21,6 @@ section('Import', (section) => {
         await sm.startServices('@infect/rda-service-registry');
         await sm.startServices('@infect/infect-rda-sample-storage');
         await sm.startServices('@infect/api');
-
-
-        const filePath = path.join(path.dirname(new URL(import.meta.url).pathname), './data/new-anresis-format.csv');
-        const data = await readFile(filePath);
-        
-        rows = await new Promise((resolve, reject) => {
-            parse(data, {
-                columns: true,
-            }, (err, records) => {
-                if (err) reject(err);
-                else resolve(records);
-            });
-        });
     });
     
 
@@ -73,6 +54,9 @@ section('Import', (section) => {
             dataVersionIdentifier: `Version-${Math.random()}`,
             dataVersionDescription: `Description-${Math.random()}`,
         });
+
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
         const { validSamples, invalidSamples } = await importer.processData(rows);
 
@@ -116,6 +100,9 @@ section('Import', (section) => {
             dataVersionIdentifier: `Version-${Math.random()}`,
             dataVersionDescription: `Description-${Math.random()}`,
         });
+
+        const testData = new AnresisTestData();
+        const rows = await testData.getData();
 
         const { validSamples, invalidSamples } = await importer.processData(rows);
 

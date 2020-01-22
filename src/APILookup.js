@@ -59,6 +59,7 @@ export default class Lookup {
                         else return data[0];
                     } else {
                         const err = new Error(`Failed to load value for key '${key}' from ${this.host}/${this.resource}`);
+                        err.failedLookup = true;
                         err.resource = this.resource;
                         err.property = this.property;
                         err.unresolvedValue = key;

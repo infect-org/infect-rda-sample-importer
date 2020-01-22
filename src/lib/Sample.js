@@ -25,9 +25,26 @@ export default class Sample {
         // validation errors mark invalid onput data. sample that have this errors are 
         // invalid and cannot be imported.
         this.validationErrors = [];
+
+        // stores machine readable data for failed validations
+        this.failedValidationData = [];
     }
 
 
+
+    setFailedFieldValidationData({
+        inputName,
+        outputName,
+        inputValue,
+        type,
+    }) {
+        this.failedValidationData.push({
+            inputName,
+            outputName,
+            inputValue,
+            type,
+        });
+    }
 
 
     /**
@@ -62,6 +79,13 @@ export default class Sample {
         if (!this.isValid()) {
             return `Sample validation errors:\n- ${this.validationErrors.map(e => e.message).join(`\n- `)}`;
         } else return null;
+    }
+
+
+    getValidationErrorStrings() {
+        if (!this.isValid()) {
+            return this.validationErrors.map(e => e.message);
+        } else return [];
     }
     
 
@@ -148,6 +172,8 @@ export default class Sample {
             isValid: this.isValid(),
             originalValues: {},
             processedValues: this.toJSON(),
+            validationErrors: this.getValidationErrorStrings(),
+            failedValidationData: this.failedValidationData,
         };
 
         for (const [key, value] of this.originalValues.entries()) {

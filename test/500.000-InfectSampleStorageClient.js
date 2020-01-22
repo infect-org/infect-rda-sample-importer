@@ -5,23 +5,10 @@ import RainbowConfig from '@rainbow-industries/rainbow-config';
 import ServiceManager from '@infect/rda-service-manager';
 import RegistryClient from '@infect/rda-service-registry-client';
 import InfectSampleStorageClient from '../src/lib/InfectSampleStorageClient.js';
+import Sample from '../src/lib/Sample.js';
+import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
+import { AnresisTestData } from '@infect/rda-fixtures';
 
-
-
-class Sample {
-    toJSON() {
-        return {
-            bacteriumId: Math.round(Math.random()*50),
-            antibioticId: Math.round(Math.random()*50),
-            ageGroupId: Math.round(Math.random()*10),
-            hospitalStatusId: Math.round(Math.random()*3),
-            regionId: Math.round(Math.random()*10),
-            sampleDate: new Date().toISOString(),
-            resistance: Math.round(Math.random()*2),
-            uniqueIdentifier: 'sample-id-'+Math.round(Math.random()*100000000000000000),
-        };
-    }
-}
 
 
 section('Infect Sample Storage Client', (section) => {
@@ -34,6 +21,7 @@ section('Infect Sample Storage Client', (section) => {
         
         await sm.startServices('@infect/rda-service-registry');
         await sm.startServices('@infect/infect-rda-sample-storage');
+        await sm.startServices('@infect/api');
     });
     
 
@@ -82,7 +70,15 @@ section('Infect Sample Storage Client', (section) => {
         });
 
 
+        const testData = new AnresisTestData();
+        const row = await testData.getOneRow();
+        
         const sample = new Sample();
+        sample.setOriginalData(row);
+
+        const processor = new AnresisSampleProcessor({ config });
+        await processor.load();
+        await processor.processSamples([sample]);
 
         await client.storeSamples([sample]);
         await client.destroy();
@@ -110,7 +106,17 @@ section('Infect Sample Storage Client', (section) => {
         });
 
 
+        const testData = new AnresisTestData();
+        const row = await testData.getOneRow();
+        
         const sample = new Sample();
+        sample.setOriginalData(row);
+
+        const processor = new AnresisSampleProcessor({ config });
+        await processor.load();
+        await processor.processSamples([sample]);
+
+
 
         await client.storeSamples([sample]);
         await client.finalizeImport();
@@ -139,7 +145,16 @@ section('Infect Sample Storage Client', (section) => {
         });
 
 
+        const testData = new AnresisTestData();
+        const row = await testData.getOneRow();
+        
         const sample = new Sample();
+        sample.setOriginalData(row);
+
+        const processor = new AnresisSampleProcessor({ config });
+        await processor.load();
+        await processor.processSamples([sample]);
+
 
         await client.storeSamples([sample]);
         await client.delete();
