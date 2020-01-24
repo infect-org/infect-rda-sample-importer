@@ -16,11 +16,13 @@ export default class StringProcessor extends FieldProcessor {
         toUpperCase = false,
         required,
         fieldName,
+        targetFieldName,
     }) {
         super({
             name,
             required,
             fieldName,
+            targetFieldName,
         });
 
         this.minLength = minLength;

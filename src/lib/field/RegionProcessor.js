@@ -10,7 +10,7 @@ export default class RegionProcessor extends StringProcessor {
         super({
             name,
             fieldName: 'region',
-            targetFieldName: 'regioId',
+            targetFieldName: 'regionId',
             minLength: 1,
             maxLength: 100,
             trim: true,
