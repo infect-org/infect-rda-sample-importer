@@ -33,7 +33,6 @@ export default class ImportController extends Controller {
             const importer = this.importFactory.getImporter(data.id);
             const { validSamples, invalidSamples } = await importer.processData(data.records);
 
-
             if (request.hasQueryParameter('return-data')) {
                 return {
                     validSamples: validSamples.map(s => s.getJSONReport()),

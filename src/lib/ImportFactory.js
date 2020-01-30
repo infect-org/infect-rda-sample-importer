@@ -6,6 +6,7 @@ import InfectSampleStorageClient from './InfectSampleStorageClient.js';
 // different sources need different import processors to ingest the data
 const sampleProcessors = new Map();
 sampleProcessors.set('anresis-human', AnresisSampleProcessor);
+sampleProcessors.set('anresis-vet', AnresisSampleProcessor);
 
 
 

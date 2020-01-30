@@ -25,6 +25,11 @@ export default class ResistanceProcessor extends FieldProcessor {
         const fromFieldName = this.patientAgeRangeFromProcessor.getFieldName();
         const toFieldName = this.patientAgeRangeToProcessor.getFieldName();
 
+        // age is optional
+        if (!sample.hasOriginalValue(fromFieldName) && !sample.hasOriginalValue(toFieldName)) {
+            return;
+        }
+
         if (sample.hasOriginalValue(fromFieldName) && !sample.hasOriginalValue(toFieldName)) {
             this.failValidation(`PatientAgeRangeFrom value found. Missing PatientAgeRangeTo value!`);
         }
@@ -40,8 +45,8 @@ export default class ResistanceProcessor extends FieldProcessor {
         const processedToValue = await this.patientAgeRangeToProcessor.process(toValue);
 
 
-        if (fromValue > toValue) {
-            this.failValidation(`Invalid age rage: lower bound ${fromValue} is bigger then the upper bound ${toValue}!`);
+        if (processedFromValue > processedToValue) {
+            this.failValidation(`Invalid age range: lower bound ${fromValue} is bigger then the upper bound ${toValue}!`);
         }
 
         sample.setProcessedValue(this.patientAgeRangeFromProcessor.getTargetFieldName(), processedFromValue);
