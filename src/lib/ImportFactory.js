@@ -65,15 +65,13 @@ export default class ImportFactory {
      * get the sample storage instance
      */
     async getSampleStorage() {
-        if (!this.sampleStorage) {
-            this.sampleStorage = new InfectSampleStorageClient({
-                registryClient: this.registryClient,
-            });
+        const sampleStorage = new InfectSampleStorageClient({
+            registryClient: this.registryClient,
+        });
 
-            await this.sampleStorage.load();
-        }
+        await sampleStorage.load();
 
-        return this.sampleStorage;
+        return sampleStorage;
     }
 
 

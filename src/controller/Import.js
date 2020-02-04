@@ -55,7 +55,7 @@ export default class ImportController extends Controller {
         const id = request.getParameter('id');
 
         if (!this.importFactory.hasImporter(id)) {
-            return request.response().status(400).send(`Importer '${id}' doeas not exist!`);
+            return request.response().status(400).send(`Importer '${id}' does not exist!`);
         }
 
         const importer = this.importFactory.getImporter(id);
@@ -71,7 +71,7 @@ export default class ImportController extends Controller {
         const id = request.getParameter('id');
 
         if (!this.importFactory.hasImporter(id)) {
-            return request.response().status(400).send(`Importer '${id}' doeas not exist!`);
+            return request.response().status(400).send(`Importer '${id}' does not exist!`);
         }
 
         const importer = this.importFactory.getImporter(id);
