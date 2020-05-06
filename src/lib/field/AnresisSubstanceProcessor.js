@@ -12,13 +12,6 @@ export default class AnresisSubstanceProcessor extends SubstanceProcessor {
             name: 'AnresisSubstance',
             targetFieldName: 'substanceId',
         });
-        
-        this.lookup = new APILookup({
-            apiHost: apiHost,
-            resource: 'anresis.antibioticMapping',
-            filterProperty: 'anresisAntibiotic',
-            selectionField: 'id_compound',
-        });
     }
 
 

@@ -1,12 +1,13 @@
 import Importer from './Importer.js';
-import AnresisSampleProcessor from './processors/AnresisSampleProcessor.js';
+import AnresisHumanSampleProcessor from './processors/AnresisHumanSampleProcessor.js';
+import AnresisVETSampleProcessor from './processors/AnresisVETSampleProcessor.js';
 import InfectSampleStorageClient from './InfectSampleStorageClient.js';
 
 
 // different sources need different import processors to ingest the data
 const sampleProcessors = new Map();
-sampleProcessors.set('anresis-human', AnresisSampleProcessor);
-sampleProcessors.set('anresis-vet', AnresisSampleProcessor);
+sampleProcessors.set('anresis-human', AnresisHumanSampleProcessor);
+sampleProcessors.set('anresis-vet', AnresisVETSampleProcessor);
 
 
 

@@ -1,9 +1,9 @@
 import SampleProcessor from '../SampleProcessor.js';
 
 import AnimalProcessor from '../field/AnimalProcessor.js';
-import AnresisMicroorganismProcessor from '../field/AnresisMicroorganismProcessor.js';
-import AnresisRegionProcessor from '../field/AnresisRegionProcessor.js';
-import AnresisSubstanceProcessor from '../field/AnresisSubstanceProcessor.js';
+import AnresisHumanMicroorganismProcessor from '../field/AnresisHumanMicroorganismProcessor.js';
+import AnresisHumanRegionProcessor from '../field/AnresisHumanRegionProcessor.js';
+import AnresisHumanSubstanceProcessor from '../field/AnresisHumanSubstanceProcessor.js';
 import CountryProcessor from '../field/CountryProcessor.js';
 import IsScreeningProcessor from '../field/IsScreeningProcessor.js';
 import PatientAgeProcessor from '../field/PatientAgeProcessor.js';
@@ -27,9 +27,9 @@ export default class AnresisProcessor extends SampleProcessor {
         const apiHost = this.config.get('core-data.host');
 
         this.registerFieldProcessor(new AnimalProcessor({ apiHost }));
-        this.registerFieldProcessor(new AnresisMicroorganismProcessor({ apiHost }));
-        this.registerFieldProcessor(new AnresisRegionProcessor({ apiHost }));
-        this.registerFieldProcessor(new AnresisSubstanceProcessor({ apiHost }));
+        this.registerFieldProcessor(new AnresisHumanMicroorganismProcessor({ apiHost }));
+        this.registerFieldProcessor(new AnresisHumanRegionProcessor({ apiHost }));
+        this.registerFieldProcessor(new AnresisHumanSubstanceProcessor({ apiHost }));
         this.registerFieldProcessor(new CountryProcessor({ apiHost }));
         this.registerFieldProcessor(new IsScreeningProcessor());
         this.registerFieldProcessor(new PatientAgeProcessor());

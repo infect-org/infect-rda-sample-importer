@@ -13,7 +13,11 @@ export default class Lookup {
         resource,
         filterProperty = 'identifier',
         selectionField = 'id',
+        selectionHeader = '*',
+        filterHader = '',
     }) {
+        this.selectionHeader = selectionHeader;
+        this.filterHader = filterHader;
 
         // the resource to load
         this.host = apiHost;
@@ -49,8 +53,16 @@ export default class Lookup {
     async get(key) {
         if (this.cache.has(key)) return this.cache.get(key);
         else {
+            let filter = `${this.property}=${key}`;
+
+            // add a custom filter if required
+            if (this.filterHader) {
+                filter += `, ${this.filterHader}`;
+            }
+
             const promise = this.httpClient.get(`${this.host}/core-data/v1/${this.resource}`)
-                .setHeader('filter', `${this.property}=${key}`)
+                .setHeader('filter', filter)
+                .setHeader('select', this.selectionHeader)
                 .send().then(async (response) => {
                     const data = await response.getData();
 

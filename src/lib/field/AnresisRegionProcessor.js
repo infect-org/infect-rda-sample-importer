@@ -12,13 +12,6 @@ export default class AnresisMicroorganismProcessor extends RegionProcessor {
             name: 'AnresisRegion',
             targetFieldName: 'regionId',
         });
-
-        this.lookup = new APILookup({
-            apiHost: apiHost,
-            resource: 'anresis.regionMapping',
-            filterProperty: 'anresisRegion',
-            selectionField: 'id_region',
-        });
     }
 
 
