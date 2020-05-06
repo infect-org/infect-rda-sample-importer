@@ -5,9 +5,7 @@ import SubstanceProcessor from './SubstanceProcessor.js';
 export default class AnresisSubstanceProcessor extends SubstanceProcessor {
 
 
-    constructor({
-        apiHost,
-    }) {
+    constructor() {
         super({
             name: 'AnresisSubstance',
             targetFieldName: 'substanceId',

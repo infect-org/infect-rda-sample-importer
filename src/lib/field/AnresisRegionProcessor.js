@@ -5,9 +5,7 @@ import RegionProcessor from './RegionProcessor.js';
 export default class AnresisMicroorganismProcessor extends RegionProcessor {
 
 
-    constructor({
-        apiHost,
-    }) {
+    constructor() {
         super({
             name: 'AnresisRegion',
             targetFieldName: 'regionId',

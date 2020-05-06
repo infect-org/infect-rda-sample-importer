@@ -5,9 +5,7 @@ import MicroorganismProcessor from './MicroorganismProcessor.js';
 export default class AnresisMicroorganismProcessor extends MicroorganismProcessor {
 
 
-    constructor({
-        apiHost,
-    }) {
+    constructor() {
         super({
             name: 'AnresisMicroorganism',
             targetFieldName: 'microorganismId',
