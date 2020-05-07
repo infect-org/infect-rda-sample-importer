@@ -12,8 +12,8 @@ export default class AnresisVETSubstanceProcessor extends AnresisSubstanceProces
         
         this.lookup = new APILookup({
             apiHost: apiHost,
-            resource: 'anresis.antibioticMapping',
-            filterProperty: 'anresisAntibiotic',
+            resource: 'anresis.compoundMapping',
+            filterProperty: 'sourceName',
             selectionField: 'id_compound',
             selectionHeader: '*, generics:tenant.name',
             filterHeader: 'generics:tenant.identifier=anresis-vet',

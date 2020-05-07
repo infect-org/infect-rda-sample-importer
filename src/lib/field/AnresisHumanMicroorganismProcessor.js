@@ -13,7 +13,7 @@ export default class AnresisHumanMicroorganismProcessor extends AnresisMicroorga
         this.lookup = new APILookup({
             apiHost: apiHost,
             resource: 'anresis.bacteriumMapping',
-            filterProperty: 'anresisBacterium',
+            filterProperty: 'sourceName',
             selectionField: 'id_bacterium',
             selectionHeader: '*, generics:tenant.name',
             filterHeader: 'generics:tenant.identifier=anresis-human',

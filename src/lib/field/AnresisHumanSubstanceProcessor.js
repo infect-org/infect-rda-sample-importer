@@ -12,8 +12,8 @@ export default class AnresisHumanSubstanceProcessor extends AnresisSubstanceProc
         
         this.lookup = new APILookup({
             apiHost: apiHost,
-            resource: 'anresis.antibioticMapping',
-            filterProperty: 'anresisAntibiotic',
+            resource: 'anresis.compoundMapping',
+            filterProperty: 'sourceName',
             selectionField: 'id_compound',
             selectionHeader: '*, generics:tenant.name',
             filterHeader: 'generics:tenant.identifier=anresis-human',
