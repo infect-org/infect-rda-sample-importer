@@ -53,6 +53,8 @@ export default class Lookup {
     async get(key) {
         if (this.cache.has(key)) return this.cache.get(key);
         else {
+            // escape commas, the api will unescape them
+            key = key.replace(/,/g, ';;');
             let filter = `${this.property}=${key}`;
 
             // add a custom filter if required
