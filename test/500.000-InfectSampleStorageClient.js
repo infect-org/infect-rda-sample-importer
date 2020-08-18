@@ -6,7 +6,7 @@ import ServiceManager from '@infect/rda-service-manager';
 import RegistryClient from '@infect/rda-service-registry-client';
 import InfectSampleStorageClient from '../src/lib/InfectSampleStorageClient.js';
 import Sample from '../src/lib/Sample.js';
-import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
+import AnresisHumanSampleProcessor from '../src/lib/processors/AnresisHumanSampleProcessor.js';
 import { AnresisTestData } from '@infect/rda-fixtures';
 
 
@@ -76,7 +76,7 @@ section('Infect Sample Storage Client', (section) => {
         const sample = new Sample();
         sample.setOriginalData(row);
 
-        const processor = new AnresisSampleProcessor({ config });
+        const processor = new AnresisHumanSampleProcessor({ config });
         await processor.load();
         await processor.processSamples([sample]);
 
@@ -112,7 +112,7 @@ section('Infect Sample Storage Client', (section) => {
         const sample = new Sample();
         sample.setOriginalData(row);
 
-        const processor = new AnresisSampleProcessor({ config });
+        const processor = new AnresisHumanSampleProcessor({ config });
         await processor.load();
         await processor.processSamples([sample]);
 
@@ -151,7 +151,7 @@ section('Infect Sample Storage Client', (section) => {
         const sample = new Sample();
         sample.setOriginalData(row);
 
-        const processor = new AnresisSampleProcessor({ config });
+        const processor = new AnresisHumanSampleProcessor({ config });
         await processor.load();
         await processor.processSamples([sample]);
 

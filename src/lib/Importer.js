@@ -58,10 +58,20 @@ export default class Import extends EventEmitter {
 
         // store samples, that could be validated and mapped on the storage 
         // service
-        await this.sampleStorage.storeSamples(validSamples);
+        const {
+            importedRecordCount,
+            duplicateRecordCount,
+            totalRecordCount,
+        } = await this.sampleStorage.storeSamples(validSamples);
 
         // return everything, so that it can be assembled into a report on the import agent
-        return { validSamples, invalidSamples };
+        return {
+            validSamples,
+            invalidSamples,
+            importedRecordCount,
+            duplicateRecordCount,
+            totalRecordCount,
+        };
     } 
 
 

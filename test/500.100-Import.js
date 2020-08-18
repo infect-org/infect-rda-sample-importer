@@ -4,7 +4,7 @@ import RainbowConfig from '@rainbow-industries/rainbow-config';
 import ServiceManager from '@infect/rda-service-manager';
 import RegistryClient from '@infect/rda-service-registry-client';
 import Importer from '../src/lib/Importer.js';
-import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
+import AnresisHumanSampleProcessor from '../src/lib/processors/AnresisHumanSampleProcessor.js';
 import InfectSampleStorageClient from '../src/lib/InfectSampleStorageClient.js';
 import path from 'path';
 import { AnresisTestData } from '@infect/rda-fixtures';
@@ -33,7 +33,7 @@ section('Import', (section) => {
 
         const registryClient = new RegistryClient(config.get('service-registry.host')); 
 
-        const sampleProcessor = new AnresisSampleProcessor({ config });
+        const sampleProcessor = new AnresisHumanSampleProcessor({ config });
         await sampleProcessor.load();
 
         const sampleStorage = new InfectSampleStorageClient({
@@ -79,7 +79,7 @@ section('Import', (section) => {
 
         const registryClient = new RegistryClient(config.get('service-registry.host')); 
 
-        const sampleProcessor = new AnresisSampleProcessor({ config });
+        const sampleProcessor = new AnresisHumanSampleProcessor({ config });
         await sampleProcessor.load();
 
         const sampleStorage = new InfectSampleStorageClient({

@@ -2,21 +2,21 @@ import assert from 'assert';
 import section from 'section-tests';
 import path from 'path';
 import RainbowConfig from '@rainbow-industries/rainbow-config';
-import AnresisMicroorganismProcessor from '../src/lib/field/AnresisMicroorganismProcessor.js';
+import AnresisHumanSubstanceProcessor from '../src/lib/field/AnresisHumanSubstanceProcessor.js';
 
 
 
 section.continue('Field Processors', (section) => {
    
 
-    section('AnresisMicroorganismProcessor', (section) => {
+    section('AnresisHumanSubstanceProcessor', (section) => {
 
         section.test('invald value', async() => {
             const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
             const config = new RainbowConfig(configDir);
             await config.load();
 
-            const processor = new AnresisMicroorganismProcessor({
+            const processor = new AnresisHumanSubstanceProcessor({
                 apiHost: config.get('core-data.host'),
             });
 
@@ -31,12 +31,12 @@ section.continue('Field Processors', (section) => {
             await config.load();
 
 
-            const processor = new AnresisMicroorganismProcessor({
+            const processor = new AnresisHumanSubstanceProcessor({
                 apiHost: config.get('core-data.host'),
             });
 
-            const value = await processor.process('Campylobacter jejuni');
-            assert.equal(value, 10);
+            const value = await processor.process('Amoxicillin-clavulanic acid');
+            assert.equal(value, 2);
         });
     });
 });

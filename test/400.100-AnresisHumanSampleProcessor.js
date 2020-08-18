@@ -1,6 +1,6 @@
 import section from 'section-tests';
 import assert from 'assert';
-import AnresisSampleProcessor from '../src/lib/processors/AnresisSampleProcessor.js';
+import AnresisHumanSampleProcessor from '../src/lib/processors/AnresisHumanSampleProcessor.js';
 import Sample from '../src/lib/Sample.js';
 import { Transform } from 'stream';
 import path from 'path';
@@ -13,7 +13,7 @@ import { AnresisTestData } from '@infect/rda-fixtures';
 
 
 
-section('AnresisSample Processor', (section) => {
+section('AnresisHumanSampleProcessor', (section) => {
     let sm;
 
     section.setup(async () => {
@@ -28,12 +28,13 @@ section('AnresisSample Processor', (section) => {
 
 
     section.test('process samples', async() => {
+        section.setTimeout(2000);
         const configDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../config/');
         const config = new RainbowConfig(configDir);
         await config.load();
 
 
-        const processor = new AnresisSampleProcessor({ config });
+        const processor = new AnresisHumanSampleProcessor({ config });
         await processor.load();
 
         
