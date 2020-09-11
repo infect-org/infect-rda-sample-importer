@@ -5,4 +5,4 @@ service-registry:
     host: http://l.dns.porn:9000
 
 core-data:
-    host: http://api.l.dns.porn:8000
+    host: https://api.infect.info
