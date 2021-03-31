@@ -33,8 +33,13 @@ export default class Lookup {
             maxAge: cacheTTL,
         });
 
+        this.threadCount = 1;
+        this.currentThreadCount = 0;
+        this.queue = [];
 
         this.httpClient = new HTTP2Client();
+
+        this.requestCount = 0;
     }
 
 
@@ -51,10 +56,12 @@ export default class Lookup {
     * load data fro a specific key
     */
     async get(key) {
+        // escape commas, the api will unescape them
+        key = key.replace(/,/g, ';;');
+
         if (this.cache.has(key)) return this.cache.get(key);
         else {
-            // escape commas, the api will unescape them
-            key = key.replace(/,/g, ';;');
+            
             let filter = `${this.property}=${key}`;
 
             // add a custom filter if required
@@ -62,7 +69,52 @@ export default class Lookup {
                 filter += `, ${this.filterHader}`;
             }
 
-            const promise = this.httpClient.get(`${this.host}/core-data/v1/${this.resource}`)
+            const promise = this.request(filter, key);
+            
+            this.cache.set(key, promise);
+            return promise;
+        }
+    }
+
+
+
+
+    request(filter, key) {
+        setImmediate(() => {
+            this.workQueue();
+        });
+
+        return new Promise((resolve, reject) => {
+            this.queue.push({
+                resolve,
+                reject,
+                filter,
+                key,
+            });
+        });
+    }
+
+
+
+
+    workQueue() {
+        if (this.currentThreadCount < this.threadCount && this.queue.length) {
+            this.currentThreadCount++;
+
+            const {
+                resolve,
+                reject,
+                filter,
+                key,
+            } = this.queue.shift();
+
+
+            this.requestCount++;
+            if (this.requestCount%1000 === 0) {
+                log.warn(`There are sent an excessive amoutn of requests using the APILookup: Sent ${this.requestCount} requests to ${this.host}/core-data/v1/${this.resource}`);
+            }
+
+            this.httpClient.get(`${this.host}/core-data/v1/${this.resource}`)
                 .setHeader('filter', filter)
                 .setHeader('select', this.selectionHeader)
                 .send().then(async (response) => {
@@ -79,11 +131,10 @@ export default class Lookup {
                         err.unresolvedValue = key;
                         throw err;
                     }
+                }).then(resolve).catch(reject).finally(() => {
+                    this.currentThreadCount--;
+                    this.workQueue();
                 });
-            
-
-            this.cache.set(key, promise);
-            return this.cache.get(key);
         }
     }
 }
