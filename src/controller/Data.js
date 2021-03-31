@@ -19,7 +19,10 @@ export default class ImportController extends Controller {
 
 
     async create(request) {
-        const data = await request.getData();
+        const data = await request.getData().catch((err) => {
+            console.log('err', err);
+            throw err;
+        });
 
         if (!data) request.response().status(400).send(`Missing request body!`);
         else if (!type.object(data)) request.response().status(400).send(`Request body must be a json object!`);

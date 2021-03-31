@@ -2,6 +2,7 @@ import FieldProcessor from './FieldProcessor.js';
 import GenotypeResistanceProcessor from './GenotypeResistanceProcessor.js';
 import QualitativeResistanceProcessor from './QualitativeResistanceProcessor.js';
 import QuantititiveResistanceMicProcessor from './QuantititiveResistanceMicProcessor.js';
+import QuantititiveResistanceDiscDiffusionProcessor from './QuantititiveResistanceDiscDiffusionProcessor.js';
 
 
 
@@ -19,6 +20,7 @@ export default class ResistanceProcessor extends FieldProcessor {
         this.genotypeResistanceProcessor = new GenotypeResistanceProcessor();
         this.qualitativeResistanceProcessor = new QualitativeResistanceProcessor();
         this.quantititiveResistanceMicProcessor = new QuantititiveResistanceMicProcessor();
+        this.quantititiveResistanceDiscDiffusionProcessor = new QuantititiveResistanceDiscDiffusionProcessor();
     }
 
 
@@ -54,6 +56,16 @@ export default class ResistanceProcessor extends FieldProcessor {
             valueFound = true;
 
             sample.setProcessedValue(this.quantititiveResistanceMicProcessor.getTargetFieldName(), processedValue);
+        }
+
+        if (sample.hasOriginalValue(this.quantititiveResistanceDiscDiffusionProcessor.getFieldName())) {
+            const fieldName = this.quantititiveResistanceDiscDiffusionProcessor.getFieldName();
+            const value = sample.getOriginalValue(fieldName);
+            const processedValue = await this.quantititiveResistanceDiscDiffusionProcessor.process(value);
+
+            valueFound = true;
+
+            sample.setProcessedValue(this.quantititiveResistanceDiscDiffusionProcessor.getTargetFieldName(), processedValue);
         }
 
         if (!valueFound) {

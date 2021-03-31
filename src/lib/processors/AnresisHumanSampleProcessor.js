@@ -3,6 +3,7 @@ import SampleProcessor from '../SampleProcessor.js';
 import AnimalProcessor from '../field/AnimalProcessor.js';
 import AnresisHumanMicroorganismProcessor from '../field/AnresisHumanMicroorganismProcessor.js';
 import AnresisHumanRegionProcessor from '../field/AnresisHumanRegionProcessor.js';
+import AnresisHumanSampleSourceProcessor from '../field/AnresisHumanSampleSourceProcessor.js';
 import AnresisHumanSubstanceProcessor from '../field/AnresisHumanSubstanceProcessor.js';
 import CountryProcessor from '../field/CountryProcessor.js';
 import IsScreeningProcessor from '../field/IsScreeningProcessor.js';
@@ -29,6 +30,7 @@ export default class AnresisProcessor extends SampleProcessor {
         this.registerFieldProcessor(new AnimalProcessor({ apiHost }));
         this.registerFieldProcessor(new AnresisHumanMicroorganismProcessor({ apiHost }));
         this.registerFieldProcessor(new AnresisHumanRegionProcessor({ apiHost }));
+        this.registerFieldProcessor(new AnresisHumanSampleSourceProcessor({ apiHost }));
         this.registerFieldProcessor(new AnresisHumanSubstanceProcessor({ apiHost }));
         this.registerFieldProcessor(new CountryProcessor({ apiHost }));
         this.registerFieldProcessor(new IsScreeningProcessor());

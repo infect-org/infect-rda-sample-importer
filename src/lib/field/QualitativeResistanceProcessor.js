@@ -6,7 +6,7 @@ export default class QualitativeResistanceProcessor extends StringProcessor {
 
     constructor() {
         super({
-            name: 'QialitativeResistance',
+            name: 'QualitativeResistance',
             fieldName: 'resistance-qualitative',
             minLength: 1,
             maxLength: 1,

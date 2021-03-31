@@ -1,13 +1,13 @@
 import FieldProcessor from './FieldProcessor.js';
 
 
-export default class QuantititiveResistanceMicProcessor extends FieldProcessor {
+export default class QuantititiveResistanceDiscDiffusionProcessor extends FieldProcessor {
 
 
     constructor() {
         super({
-            name: 'QuantititiveResistanceMic',
-            fieldName: 'resistance-quantitative-mic',
+            name: 'QuantititiveResistanceDiscDiffusion',
+            fieldName: 'resistance-quantitative-disc-diffusion',
         });
     }
 
